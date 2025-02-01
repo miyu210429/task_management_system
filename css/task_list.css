@@ -1,0 +1,143 @@
+/* /css/task_list.css */
+
+/* メインコンテンツ（サイドメニュー固定分の余白と幅調整） */
+.main-content {
+    margin-left: 250px;              /* サイドメニューの幅分オフセット */
+    width: calc(100% - 250px);         /* 残りの幅を使用 */
+    padding: 20px;
+    background-color: #fff;
+    min-height: 100vh;
+  }
+  
+  /* コンテンツ横方向中央寄せ用ラッパー */
+  .content-wrapper {
+    max-width: 1000px;               /* お好みで調整 */
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  
+  /* ---------- 検索フォーム ---------- */
+  .search-form-section {
+    margin-bottom: 30px;
+  }
+  
+  .search-form-section h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* 検索フォーム全体 */
+  .search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+  }
+  
+  /* 各フォームグループ */
+  .search-form .form-group {
+    flex: 1 1 200px;               /* 最小幅200pxで拡縮可能 */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .search-form label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .search-form select,
+  .search-form input[type="date"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* 日付入力グループ */
+  .search-form .date-range {
+    flex: 1 1 300px;
+  }
+  
+  .date-inputs {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .date-separator {
+    margin: 0 5px;
+  }
+  
+  /* 検索ボタン */
+  .search-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .search-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* ---------- タスク一覧 ---------- */
+  
+  /* ヘッダー行とデータ行の共通設定 */
+  .task-list-header,
+  .task-row {
+    display: grid;
+    /* grid-template-columns の値は各セルの幅の割合を指定 */
+    grid-template-columns: 60px 2fr 1.5fr 1fr 1.5fr 60px 60px;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  /* ヘッダー行 */
+  .task-list-header {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  /* データ行 */
+  .task-row {
+    border-top: none;
+  }
+  
+  .task-row:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* 各セル内のリンク */
+  .task-cell a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .task-cell a:hover {
+    color: #0056b3;
+  }
+  
+  /* セル内パディング */
+  .task-cell {
+    padding: 5px 10px;
+  }
+  
+.task-list-header,
+.task-row {
+  display: grid;
+  /* 新しいグリッド設定 */
+  grid-template-columns: 60px 3fr 1fr 0.8fr 1fr 60px 60px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
