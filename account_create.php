@@ -20,8 +20,13 @@
             </div>
             
             <div class="form-group">
-                <label for="username">ユーザー名</label>
+                <label for="username">ログイン名</label>
                 <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nickname">ニックネーム(表示名)</label>
+                <input type="text" id="nickname" name="nickname" required>
             </div>
             
             <div class="form-group checkbox-group">

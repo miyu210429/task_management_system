@@ -14,7 +14,7 @@
         <div class="content-wrapper">
             <div class="header">
                 <h1>アカウント一覧</h1>
-                <a href="/" class="btn-create">新規アカウント作成</a>
+                <a href="/account_create.php" class="btn-create">新規アカウント作成</a>
             </div>
 
             <!-- アカウント一覧のテーブル -->
@@ -22,7 +22,7 @@
             <!-- ヘッダー行 -->
             <div class="account-row header-row">
                 <div class="account-cell cell-id">ID</div>
-                <div class="account-cell cell-username">ユーザー名</div>
+                <div class="account-cell cell-username">ニックネーム</div>
                 <div class="account-cell cell-registration">アカウント登録日</div>
                 <div class="account-cell cell-update">情報更新日</div>
                 <div class="account-cell cell-edit">情報更新</div>
@@ -36,7 +36,7 @@
                 <div class="account-cell cell-registration">2025-02-01</div>
                 <div class="account-cell cell-update">2025-02-02</div>
                 <div class="account-cell cell-edit">
-                <a href="/">編集</a>
+                <a href="/account_update.php">編集</a>
                 </div>
                 <div class="account-cell cell-delete">
                 <a href="/" onclick="return confirm('本当に削除しますか？');">削除</a>
