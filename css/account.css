@@ -1,0 +1,82 @@
+/* /css/account.css */
+
+/* メインコンテンツ（サイドメニュー固定分の余白と幅調整） */
+.main-content {
+    margin-left: 250px;              /* サイドメニューの幅分オフセット */
+    width: calc(100% - 250px);         /* 残りの幅を使用 */
+    padding: 20px;
+    background-color: #fff;
+    min-height: 100vh;
+  }
+  
+  /* 横方向中央寄せ用のラッパー */
+  .content-wrapper {
+    max-width: 600px;                /* 横幅いい塩梅で調整 */
+    margin: 0 auto;                  /* 横方向中央寄せ */
+    box-sizing: border-box;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ページタイトル */
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* フォーム全体のスタイル */
+  .account-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* ラベルのスタイル */
+  .account-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* 入力フィールドのスタイル */
+  .account-form input[type="email"],
+  .account-form input[type="text"],
+  .account-form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* チェックボックスのグループ */
+  .account-form .checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+  }
+  .account-form .checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  /* 送信ボタンのスタイル */
+  .account-form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .account-form button:hover {
+    background-color: #0056b3;
+  }
+  
