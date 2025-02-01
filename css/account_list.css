@@ -1,0 +1,92 @@
+/* /css/account_list.css */
+
+/* メインコンテンツ全体のスタイル（サイドメニュー固定分の余白を確保） */
+.main-content {
+    flex: 1;             /* コンテナ内で利用可能な残り幅を全て使う */
+    margin-left: 250px;  /* サイドメニューの幅分オフセット */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+  
+  /* コンテンツ中央寄せ用ラッパー */
+  .content-wrapper {
+    max-width: 1000px;  /* お好みで調整 */
+    margin: 0 auto;
+  }
+  
+  /* ヘッダー部：タイトルと新規作成ボタンの配置 */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  /* 新規アカウント作成ボタン */
+  .btn-create {
+    padding: 10px 16px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-create:hover {
+    background-color: #0056b3;
+  }
+  
+  /* アカウント一覧の疑似テーブル全体 */
+  .account-list {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* 各行をグリッドレイアウトで表現 */
+  .account-row {
+    display: grid;
+    grid-template-columns: 60px 1.5fr 2fr 2fr 1fr 1fr;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+  }
+  
+  /* ヘッダー行のスタイル */
+  .header-row {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  /* データ行（ヘッダー以降）の境界線調整 */
+  .account-row:not(:first-child) {
+    border-top: none;
+  }
+  
+  /* 偶数行に背景色を付ける */
+  .account-row:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* マウスオーバー時の背景色 */
+  .account-row:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* セル内リンクのスタイル */
+  .account-cell a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .account-cell a:hover {
+    color: #0056b3;
+  }
+  
