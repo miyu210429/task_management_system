@@ -12,7 +12,8 @@
     <?php include './template/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
-            <h1>アカウント登録</h1>
+            <h1>アカウント編集</h1>
+            <p class="account-info">美優さんのアカウント</p>
             <form action="/" method="post" class="account-form">
             <div class="form-group">
                 <label for="email">メールアドレス</label>
@@ -37,7 +38,7 @@
             </div>
             
             <div class="form-group">
-                <button type="submit">作成</button>
+                <button type="submit">更新</button>
             </div>
             </form>
         </div>
