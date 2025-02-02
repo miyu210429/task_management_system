@@ -65,7 +65,7 @@
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
-            <?php for($i=0;$i<30;$i++){?>
+            <?php for($i=0;$i<10;$i++){?>
             <div class="task-row">
                 <div class="task-cell cell-id">1</div>
                 <div class="task-cell cell-title">タスクタイトルサンプルそんなに長いものいれられないかも</div>
@@ -81,6 +81,22 @@
             </div>
             <?php } ?>
             </section>
+            
+            <?php /*
+            現在のページ数を取得したり最大ページ数を取得して
+            うまい具合にcurrentと表示するページ数を調整してくださいな
+            */?>
+            <nav class="pagination">
+            <ul>
+                <li><a href="?page=1" class="prev">前へ</a></li>
+                <li><a href="?page=1">1</a></li>
+                <li><a href="?page=2">2</a></li>
+                <li><span class="current">3</span></li>
+                <li><a href="?page=4">4</a></li>
+                <li><a href="?page=5">5</a></li>
+                <li><a href="?page=4" class="next">次へ</a></li>
+            </ul>
+            </nav>
         </div>
     </main>
 

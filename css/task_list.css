@@ -141,3 +141,53 @@
   padding: 10px;
   border: 1px solid #ddd;
 }
+
+/* ページャー全体のスタイル */
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* ページャーのリストの初期設定 */
+.pagination ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+/* リストアイテムを横並びに */
+.pagination li {
+  display: inline;
+  margin: 0 5px;
+}
+
+/* 各リンク・数字のスタイル */
+.pagination a,
+.pagination span {
+  display: inline-block;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #007bff;
+  transition: background-color 0.3s;
+}
+
+/* ホバー時の背景色 */
+.pagination a:hover {
+  background-color: #f0f0f0;
+}
+
+/* 現在のページ */
+.pagination .current {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+/* 前へ、次へ のボタン用（必要に応じて） */
+.pagination .prev,
+.pagination .next {
+  font-weight: bold;
+}
