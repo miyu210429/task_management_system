@@ -6,7 +6,7 @@
   <nav class="menu">
     <ul>
       <li><a href="/task_list.php">タスク一覧</a></li>
-      <li><a href="/">新規タスク作成</a></li>
+      <li><a href="/task_create.php">新規タスク作成</a></li>
       <li><a href="/account_list.php">アカウント一覧</a></li>
       <li><a href="/logout.php">ログアウト</a></li>
     </ul>
