@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タスク作成</title>
+  <title>タスク更新</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/task.css">
 </head>
 <body>
   <div class="container">
-    <?php include './template/default.php'; ?>
+    <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
-            <h1>タスク作成</h1>
+            <h1>タスクID:121の更新</h1>
             <form action="/" method="post" class="task-form">
             <div class="form-group">
                 <label for="task_name">タスク名</label>
@@ -40,7 +40,7 @@
             </div>
             
             <div class="form-group">
-                <button type="submit">作成</button>
+                <button type="submit">更新</button>
             </div>
             </form>
         </div>

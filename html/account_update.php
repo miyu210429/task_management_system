@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アカウント登録</title>
+  <title>アカウント作成</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/account.css">
 </head>
 <body>
   <div class="container">
-    <?php include './template/default.php'; ?>
+    <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
-            <h1>アカウント登録</h1>
+            <h1>アカウント編集</h1>
+            <p class="account-info">美優さんのアカウント</p>
             <form action="/" method="post" class="account-form">
             <div class="form-group">
                 <label for="email">メールアドレス</label>
@@ -42,7 +43,7 @@
             </div>
             
             <div class="form-group">
-                <button type="submit">作成</button>
+                <button type="submit">更新</button>
             </div>
             </form>
         </div>
