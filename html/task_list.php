@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container">
-    <?php include './template/default.php'; ?>
+    <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
             <!-- 検索フォームセクション -->

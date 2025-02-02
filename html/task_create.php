@@ -9,7 +9,7 @@
 </head>
 <body>
   <div class="container">
-    <?php include './template/default.php'; ?>
+    <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
             <h1>タスク作成</h1>
