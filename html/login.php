@@ -1,3 +1,25 @@
+<?php
+session_start();
+'mysql:dbname=selfphp; host=mysql; charset=utf8';
+try {
+    $db = new PDO('mysql:dbname=task_management;host=mysql;charset=utf8', 'akinori','qazWSX098');
+}   catch(PDOException $e) {
+    echo 'DB接続エラー: ' . $e->getMessage();
+}
+
+if(!empty($_POST)){
+  $login = $db->prepare('SELECT * FROM users WHERE login_name=? AND password=?');
+  $login->execute(array(
+    $_POST['login_name'],
+    sha1($_POST['password']."qaz")
+    ));
+  $logininfo = $login->fetch();
+
+  $_SESSION['id'] = $logininfo['id'];
+    
+    header('Location: task_list.php'); exit();
+  }
+?>
 <!-- login.php -->
 <!DOCTYPE html>
 <html lang="ja">
@@ -13,11 +35,13 @@
     <form action="" method="post">
       <div class="form-group">
         <label for="username">ユーザー名</label>
-        <input type="text" id="username" name="username" required>
+        <input type="text" name="login_name" size="35" maxlength="225" value="<?php if(isset($_POST['login_name']))
+echo htmlspecialchars($_POST['login_name'],ENT_QUOTES); ?>" required>
       </div>
       <div class="form-group">
         <label for="password">パスワード</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" name="password" size="35" maxlength="225" value="<?php if(isset($_POST['password']))
+echo htmlspecialchars($_POST['password'],ENT_QUOTES); ?>" required>
       </div>
       <div class="form-group">
         <button type="submit">ログイン</button>
