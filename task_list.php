@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>アカウント作成</title>
+  <title>タスク一覧</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/task_list.css">
 </head>
@@ -73,7 +73,7 @@
                 <div class="task-cell cell-status">進行中</div>
                 <div class="task-cell cell-deadline">2024-02-15</div>
                 <div class="task-cell cell-edit">
-                <a href="task_edit.php?id=1">編集</a>
+                <a href="/task_update.php?id=1">編集</a>
                 </div>
                 <div class="task-cell cell-delete">
                 <a href="task_delete.php?id=1" onclick="return confirm('本当に削除しますか？');">削除</a>
