@@ -1,6 +1,5 @@
 <?php
 session_start();
-'mysql:dbname=selfphp; host=mysql; charset=utf8';
 try {
     $db = new PDO('mysql:dbname=task_management;host=mysql;charset=utf8', 'akinori','qazWSX098');
 }   catch(PDOException $e) {
