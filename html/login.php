@@ -1,25 +1,32 @@
 <?php
 session_start();
-'mysql:dbname=selfphp; host=mysql; charset=utf8';
-try {
-    $db = new PDO('mysql:dbname=task_management;host=mysql;charset=utf8', 'akinori','qazWSX098');
-}   catch(PDOException $e) {
-    echo 'DB接続エラー: ' . $e->getMessage();
-}
+
+require_once '../app/autoload.php';
+require_once '../app/config.php';
+require_once '../app/functions.php';
 
 if(!empty($_POST)){
-  $login = $db->prepare('SELECT * FROM users WHERE login_name=? AND password=?');
-  $login->execute(array(
-    $_POST['login_name'],
-    sha1($_POST['password']."qaz")
-    ));
-  $logininfo = $login->fetch();
-
-  $_SESSION['id'] = $logininfo['id'];
-    
-    header('Location: task_list.php'); exit();
+  
+  $user = new User();
+  $error = $user->validateLogin($_POST['login_name'],$_POST['password']);
+  if(!$error){
+    $logininfo = $user->login($_POST['login_name'],$_POST['password']);
+    if($logininfo) {
+      //$_SESSION['id']だと他にセッションでid持たせたいときにカニバリそうなので$_SESSION['User']['id']とする
+      $_SESSION['User']['id'] = $logininfo['id'];
+      header('Location: task_list.php'); exit(); //ログイン成功時はタスク一覧ページへ
+    }
   }
+
+  /*
+   * エラーの内容は詳細に出力可能だが、セキュリティの観点でなんでエラーなのかはシンプルにする
+   * 登録系のフォームでは細かくエラー内容を出力する必要あり
+   */
+  $error_message = "ログインに失敗しました";  
+  }  
 ?>
+
+
 <!-- login.php -->
 <!DOCTYPE html>
 <html lang="ja">
@@ -32,16 +39,22 @@ if(!empty($_POST)){
 <body>
   <div class="login-container">
     <h1>タスク管理システム ログイン</h1>
-    <form action="" method="post">
+    <?php if (isset($error_message) && !empty($error_message)) : ?>
+      <div class="error-message">
+        <?php echo h($error_message); ?>
+      </div>
+    <?php endif; ?>
+
+    <form action="/login.php" method="post">
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input type="text" name="login_name" size="35" maxlength="225" value="<?php if(isset($_POST['login_name']))
-echo htmlspecialchars($_POST['login_name'],ENT_QUOTES); ?>" required>
+echo h($_POST['login_name']); ?>" required>
       </div>
       <div class="form-group">
         <label for="password">パスワード</label>
         <input type="password" name="password" size="35" maxlength="225" value="<?php if(isset($_POST['password']))
-echo htmlspecialchars($_POST['password'],ENT_QUOTES); ?>" required>
+echo h($_POST['password']); ?>" required>
       </div>
       <div class="form-group">
         <button type="submit">ログイン</button>
