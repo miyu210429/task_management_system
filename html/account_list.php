@@ -10,8 +10,10 @@ if (empty($_SESSION['User']['id'])) {
   header('Location: login.php');
 }
 
-//ログインIDからユーザーの情報を取得
 $account = new User() ;
+$login_user = $account->getById($_SESSION['User']['id']);
+
+//ログインIDからユーザーの情報を取得
 $users = $account->getAllUsers();
 
 ?>
@@ -31,7 +33,7 @@ $users = $account->getAllUsers();
         <div class="content-wrapper">
             <div class="header">
                 <h1>アカウント一覧</h1>
-                <a href="/account_create.php" class="btn-create">新規アカウント作成</a>
+                <?php if ($login_user['is_privileged'] === 1): ?><a href="/account_create.php" class="btn-create">新規アカウント作成</a> <?php endif ?>
             </div>
 
             <!-- アカウント一覧のテーブル -->
@@ -53,10 +55,14 @@ $users = $account->getAllUsers();
                 <div class="account-cell cell-registration"><?php echo $user['created_at'] ?></div>
                 <div class="account-cell cell-update"><?php echo $user['update_at'] ?></div>
                 <div class="account-cell cell-edit">
-                <a href="/account_update.php">編集</a>
+
+                <a href="/account_update.php">
+                  <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $user['id']) echo '編集'?></a>
+
                 </div>
                 <div class="account-cell cell-delete">
-                <a href="/" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <a href="/" onclick="return confirm('本当に削除しますか？');">
+                  <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $user['id'])echo '削除'?></a>
                 </div>
             </div>
             <?php endforeach ;?>

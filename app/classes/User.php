@@ -55,6 +55,20 @@ class User {
         $stmt = $this->User->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    /**
+     * userのidからusersテーブルの全データを取得する
+     *
+     * @param  mixed $login_id
+     * @return bool | array
+     */
+    public function getById(int $login_id) : bool | array {
+        $query_id = $this->User->prepare("SELECT * FROM users WHERE id=?");
+        $query_id->execute(array(
+            $login_id
+        ));
+       return $query_id->fetch();
+    }   
 
     /**
      * ログイン処理
