@@ -1,3 +1,20 @@
+<?php
+session_start();
+
+require_once '../app/config.php';
+require_once '../app/autoload.php';
+require_once '../app/functions.php';
+
+//ログインしているかチェック
+if (empty($_SESSION['User']['id'])) {
+  header('Location: login.php');
+}
+
+//ログインIDからユーザーの情報を取得
+$account = new User() ;
+$users = $account->getAllUsers();
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -29,12 +46,12 @@
                 <div class="account-cell cell-delete">削除</div>
             </div>
 
-            <?php for($i=0;$i<30;$i++){?>
+            <?php foreach ($users as $user ) :?>
             <div class="account-row">
-                <div class="account-cell cell-id"><?php echo $i+1;?></div>
-                <div class="account-cell cell-username">super miyumiyu</div>
-                <div class="account-cell cell-registration">2025-02-01</div>
-                <div class="account-cell cell-update">2025-02-02</div>
+                <div class="account-cell cell-id"><?php echo $user['id'] ;?></div>
+                <div class="account-cell cell-username"><?php echo $user['nickname'] ?></div>
+                <div class="account-cell cell-registration"><?php echo $user['created_at'] ?></div>
+                <div class="account-cell cell-update"><?php echo $user['update_at'] ?></div>
                 <div class="account-cell cell-edit">
                 <a href="/account_update.php">編集</a>
                 </div>
@@ -42,7 +59,7 @@
                 <a href="/" onclick="return confirm('本当に削除しますか？');">削除</a>
                 </div>
             </div>
-            <?php }?>
+            <?php endforeach ;?>
             </div>
         </div>
 

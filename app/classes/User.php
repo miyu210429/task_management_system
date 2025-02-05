@@ -51,6 +51,7 @@ class User {
         if(!$get_deleted_user){
             $query .= " WHERE is_deleted = 0"; //WHERE の前に空白スペース入れないとエラーになる
         }
+        $query .= " ORDER BY id DESC";
         $stmt = $this->User->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
