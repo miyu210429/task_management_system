@@ -56,13 +56,13 @@ $users = $account->getAllUsers();
                 <div class="account-cell cell-update"><?php echo $user['update_at'] ?></div>
                 <div class="account-cell cell-edit">
 
-                <a href="/account_update.php">
-                  <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $user['id']) echo '編集'?></a>
+                  <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $user['id']): ?><a href="/account_update.php">編集</a> <?php endif ?>
 
                 </div>
+                  <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $user['id']): ?>削除</a>
                 <div class="account-cell cell-delete">
-                <a href="/" onclick="return confirm('本当に削除しますか？');">
-                  <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $user['id'])echo '削除'?></a>
+                <a href="/" onclick="return confirm('本当に削除しますか？');"> <?php endif ?>
+                 
                 </div>
             </div>
             <?php endforeach ;?>
