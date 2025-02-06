@@ -69,13 +69,20 @@ class User {
         ));
        return $query_id->fetch();
     }   
-
+    
+    /**
+     * ユーザー情報を削除するためのもの
+     * is_deletedカラムを１にすると削除
+     *
+     * @param  mixed $delete_id
+     * @return bool | array
+     */
     public function deleteUser(int $delete_id) : bool | array {
-    $array = $this->User->prepare('UPDATE users SET is_deleted = 1 WHERE id=?');
-    $array->execute(array(
-        $delete_id
-    ));
-    return $array->fetch();
+        $delete_query = $this->User->prepare('UPDATE users SET is_deleted = 1 WHERE id=?');
+        $delete_query->execute(array(
+            $delete_id
+        ));
+        return $delete_query->fetch();
     }
 
     /**
@@ -89,7 +96,7 @@ class User {
      * @return bool|array データ取得できたらそのデータを配列で、失敗したらfalseを返す 
      */
     public function login(string $login_name , string $password): bool|array {
-        $login = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND password=?');
+        $login = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND password=? AND is_deleted=0');
         $login->execute(
             array(
                 $login_name,

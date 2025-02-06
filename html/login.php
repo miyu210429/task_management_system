@@ -14,12 +14,10 @@ if(!empty($_POST)){
     if($logininfo) {
       //$_SESSION['id']だと他にセッションでid持たせたいときにカニバリそうなので$_SESSION['User']['id']とする
       //削除済みのユーザーがログインできないようにチェックする
-      if ($logininfo['is_deleted'] === 0) {
       $_SESSION['User']['id'] = $logininfo['id'];
       header('Location: task_list.php'); exit(); //ログイン成功時はタスク一覧ページへ
       }
     }
-  }
 
   /*
    * エラーの内容は詳細に出力可能だが、セキュリティの観点でなんでエラーなのかはシンプルにする
