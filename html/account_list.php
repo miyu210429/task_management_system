@@ -63,8 +63,8 @@ $users = $account->getAllUsers();
                  
                 <div class="account-cell cell-delete"> 
                 <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $user['id']): ?>
-                  <a href="/" onclick="return confirm('本当に削除しますか？');">削除</a>
-                 <?php endif ?>
+                  <a href="account_delete.php?id=<?php echo h($user['id']); ?>" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <?php endif ?>
                 </div>
             </div>
             <?php endforeach ;?>
