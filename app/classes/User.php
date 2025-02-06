@@ -70,6 +70,14 @@ class User {
        return $query_id->fetch();
     }   
 
+    public function deleteUser(int $delete_id) : bool | array {
+    $array = $this->User->prepare('UPDATE users SET is_deleted = 1 WHERE id=?');
+    $array->execute(array(
+        $delete_id
+    ));
+    return $array->fetch();
+    }
+
     /**
      * ログイン処理
      * 渡されたlogin_nameとpasswordを使ってデータを取得
