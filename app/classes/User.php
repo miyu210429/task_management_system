@@ -37,6 +37,33 @@ class User {
         $this->User = Database::getInstance()->getConnection();
     }
 
+    
+       
+    /**
+     * ユーザー情報をデータベースに挿入する
+     *
+     * @param  mixed $new_login_name
+     * @param  mixed $new_email
+     * @param  mixed $new_nickname
+     * @param  mixed $new_password
+     * @param  mixed $new_is_privileged
+     * @return bool
+     */
+    public function getCreateUser(array $post_user_info): bool|array {
+        $created_query = $this->User->prepare(
+            "INSERT INTO users SET email=?, login_name=?, nickname=?, password=?,
+             is_privileged=?, created_at=NOW(), updated_at=NOW()
+            ");
+        $created_query->execute(array(
+            $post_user_info['email'],
+            $post_user_info['login_name'],
+            $post_user_info['nickname'],
+            sha1($post_user_info['password'].USERS_PASSWORD_SALT),
+            $post_user_info['is_privileged'],
+        ));
+        return $created_query->fetch();
+    }
+
     /**
      * アカウント一覧ページ用
      * 全ページのデータを取得
@@ -105,14 +132,81 @@ class User {
          );
         return $login->fetch();
     }
+   
+    /**
+     * メールアドレスのユニークをチェック 
+     *
+     * @param  mixed $unique_email
+     * @return bool | array
+     */
+    public function getEmailUnique(string $unique_email) : bool|array {
+        $email = $this->User->prepare('SELECT * FROM users WHERE email=? AND is_deleted=0');
+        $email->execute(
+            array(
+                $unique_email
+            )
+        );
+        return $email->fetch();
 
-
-
-
+    }  
 
         
     /**
+     * ログイン名のユニークをチェック 
+     * 
+     * @param  mixed $unique_login_name
+     * @return bool | array
+     */
+    public function getLoginNameUnique(string $unique_login_name) : bool|array {
+        $login_name = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND is_deleted=0');
+        $login_name->execute(
+            array(
+                $unique_login_name
+            )
+        );
+        return $login_name->fetch();
+    }  
+
+        
+    /**
+     * ニックネームのユニークをチェック
+     *
+     * @param  mixed $unique_nickname
+     * @return bool | array
+     */
+    public function getNicknameUnique(string $unique_nickname) : bool|array {
+        $nickname = $this->User->prepare('SELECT * FROM users WHERE nickname=? AND is_deleted=0');
+        $nickname->execute(
+            array(
+                $unique_nickname
+            )
+        );
+        return $nickname->fetch();
+    }  
+    
+    /**
+     * メールアドレスのバリデーション
+     * ユニークかどうかのチェック
+     *
+     * @param  mixed $email
+     * @return bool | string
+     */
+    public function validateEmail(string $email): bool|string {
+        if (!ValidationHelper::validateEmailMold($email)) {
+            return "メールアドレスの形式で入力してください。";
+        }
+
+        if (self::getEmailUnique($email)) {
+            return "そのメールアドレスはすでに登録されています。";
+        }
+        
+        return true;
+    }
+  
+        
+    /**
      * ログイン名のバリデーション（3～12文字、英数字と記号のみ）
+     * ユニークかどうかのチェック
      *
      * @param  mixed $login_name
      * @return bool|string
@@ -126,9 +220,31 @@ class User {
             return "ログイン名は英数字と記号のみ使用できます。";
         }
 
+        if (self::getLoginNameUnique($login_name)) {
+            return "そのログイン名はすでに登録されています。";
+        }
+
         return true;
     }
 
+    /**
+     * ニックネームのバリデーション　（3~10文字）
+     * ユニークかどうかのチェック
+     *
+     * @param  mixed $nickname
+     * @return bool | string
+     */
+    public function validateNickname(string $nickname): bool|string {
+        if (!ValidationHelper::validateLength($nickname, 3, 10)) {
+            return "ニックネームは3文字以上10文字以下にしてください。";
+        }
+
+        if (self::getNicknameUnique($nickname)) {
+            return "そのニックネームはすでに登録されています。";
+        }
+
+        return true;
+    }
         
     /**
      * パスワードのバリデーション（6～20文字）
@@ -139,6 +255,10 @@ class User {
     public function validatePassword(string $password): bool|string {
         if (!ValidationHelper::validateLength($password, 6, 20)) {
             return "パスワードは6文字以上20文字以下にしてください。";
+        }
+
+        if (!ValidationHelper::validatePasswordOverlap($password)){
+            return "同じ文字を３回以上連続で使わないでください。";
         }
 
         return true;
