@@ -44,6 +44,19 @@ class ValidationHelper {
         return true;
        
     }
+    
+    /**
+     * パスワードに３回以上同じ文字が続いていないかをチェック
+     *
+     * @param  mixed $password_overlap
+     * @return bool
+     */
+    public static function validatePasswordOverlap(string $password_overlap): bool {
+        if (preg_match('/(.)\1{2,}/', $password_overlap)) {
+            return false;
+        }
+        return true;
+    }
 
 
 }

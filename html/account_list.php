@@ -48,7 +48,7 @@ $users = $user->getAllUsers();
                 <div class="account-cell cell-id"><?php echo $user['id'] ;?></div>
                 <div class="account-cell cell-username"><?php echo $user['nickname'] ?></div>
                 <div class="account-cell cell-registration"><?php echo $user['created_at'] ?></div>
-                <div class="account-cell cell-update"><?php echo $user['update_at'] ?></div>
+                <div class="account-cell cell-update"><?php echo $user['updated_at'] ?></div>
                 <div class="account-cell cell-edit">
 
                 <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $user['id']): ?>
