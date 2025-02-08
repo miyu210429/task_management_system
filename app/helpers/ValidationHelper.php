@@ -37,7 +37,7 @@ class ValidationHelper {
      * みたいな書き方もできるが、FILTER_VALIDATE_EMAILでのチェックは非常に厳密にメールアドレス形式をチェックするので
      * 正規表現で柔軟にチェック
      */
-    public static function validateEmailMOld(string $email): bool {
+    public static function validateEmail(string $email): bool {
         if(!preg_match('/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/iD', $email)){
             return false;
        }

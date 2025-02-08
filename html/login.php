@@ -8,7 +8,7 @@ require_once '../app/functions.php';
 if(!empty($_POST)){
   
   $user = new User();
-  $error = $user->validateLogin($_POST['login_name'],$_POST['password']);
+  $error = $user->validateLogin($_POST['login_name'],$_POST['password'],true);
   if(!$error){
     $logininfo = $user->login($_POST['login_name'],$_POST['password']);
     if($logininfo) {

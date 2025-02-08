@@ -2,51 +2,40 @@
 require_once '../app/autoload.php';
 require_once '../app/config.php';
 require_once '../app/functions.php';
+require_once '../app/auth.php';
 
+if ($login_user['is_privileged'] !== 1) {
+    header("Location: /acccount_list.php");
+    exit();
+}
+    
 //Userクラスをインスタンス化
 $user = new User();
 
 //ポストされた情報にエラーがないかチェック
 if (!empty($_POST) ) {
+
     //メールアドレス
     $new_email = $user->validateEmail($_POST['email']);
-    if (isset($_POST['email']) && $_POST['email'] == '') {
-        $error['email'] = 'blank';
-    }
-
     if (is_string($new_email)) {
         $error_conditions['email'] = $new_email;
     }
 
     //ログイン名
-    $new_login_name = $user->validateLoginName($_POST['login_name']);
-    if (isset($_POST['login_name']) && $_POST['login_name'] == ''){
-        $error['login_name'] = 'blank';
-    }
-
+    $new_login_name = $user->validateLoginName($_POST['login_name'],false);
     if (is_string($new_login_name)) {
         $error_conditions['login_name'] = $new_login_name;
     }
     
     //ニックネーム
     $new_nickname = $user->validateNickname($_POST['nickname']);
-    if (isset($_POST['nickname']) && $_POST['nickname'] == '') {
-        $error['nickname'] = 'blank';
-    }
-
     if (is_string($new_nickname)){
         $error_conditions['nickname'] = $new_nickname;
     }
 
-    //特権にチェックされたら１、なければ０
-    $_POST['is_privileged'] = 0;
 
     //パスワード
     $new_password = $user->validatePassword($_POST['password']);
-    if (isset($_POST['password']) && $_POST['password'] == '') {
-        $error['password'] = 'blank';
-    }
-
     if(is_string($new_password)) {
         $error_conditions['password'] = $new_password;
     }
@@ -63,9 +52,16 @@ if(!empty($_POST)) {
         $insert_array['login_name'] = $_POST['login_name'];
         $insert_array['nickname'] = $_POST['nickname'];
         $insert_array['password'] = $_POST['password'];
-        $insert_array['is_privileged'] = $_POST['is_privileged'];
 
-        $new_user = $user->getCreateUser($insert_array);
+        if(empty($_POST['is_privileged'])){
+            $insert_array['is_privileged'] = 0;
+        } else {
+            $insert_array['is_privileged'] = $_POST['is_privileged'];
+        }
+        
+
+        $user->insert($insert_array);
+
         header('Location: account_list.php'); exit();
     }
 }
@@ -94,7 +90,6 @@ if(!empty($_POST)) {
                 <input type="email" id="email" name="email" value="<?php if(isset($_POST['email']))
 echo h($_POST['email']); ?>">
                 <?php 
-                if(!empty($error['email'])) echo '入力してください';
                 if(isset($error_conditions['email'])) echo $error_conditions['email'];
                  ?>
             </div>
@@ -104,7 +99,6 @@ echo h($_POST['email']); ?>">
                 <input type="text" id="login_name" name="login_name" value="<?php if(isset($_POST['login_name']))
 echo h($_POST['login_name']); ?>">
             <?php 
-            if(!empty($error['login_name'])) echo '入力してください' ;
             if(isset($error_conditions['login_name'])) echo $error_conditions['login_name'];
             ?>
             </div>
@@ -114,24 +108,22 @@ echo h($_POST['login_name']); ?>">
                 <input type="text" id="nickname" name="nickname" value="<?php if(isset($_POST['nickname']))
 echo h($_POST['nickname']); ?>">
             <?php 
-            if(!empty($error['nickname'])) echo '入力してください'  ;
             if(isset($error_conditions['nickname'])) echo $error_conditions['nickname'];
             ?>
             </div>
             
             <div class="form-group checkbox-group">
                 <label for="is_privileged">
-                <input type="checkbox" id="is_privileged" name="is_privileged" value="1">
+                <input type="checkbox" id="is_privileged" name="is_privileged" value="1" <?php if(isset($_POST['is_privileged'])): ?>checked<?php endif; ?>> 
                 特権ユーザー（はいの場合チェック）
                 </label>
             </div>
-            
+
             <div class="form-group">
                 <label for="password">パスワード</label>
                 <input type="password" id="password" name="password" value="<?php if(isset($_POST['password']))
 echo h($_POST['password']); ?>">
             <?php 
-            if(!empty($error['password'])) echo '入力してください'  ;
             if(isset($error_conditions['password'])) echo $error_conditions['password'];
             
             ?>
