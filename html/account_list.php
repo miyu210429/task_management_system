@@ -1,20 +1,15 @@
 <?php
-session_start();
 
 require_once '../app/config.php';
 require_once '../app/autoload.php';
 require_once '../app/functions.php';
+ //ログインチェック、ログインできていなければログインページに遷移できていれば$login_userにログイン者の情報が入る
+require_once '../app/auth.php';
 
-//ログインしているかチェック
-if (empty($_SESSION['User']['id'])) {
-  header('Location: login.php');
-}
-
-$account = new User() ;
-$login_user = $account->getById($_SESSION['User']['id']);
+$user = new User() ;
 
 //ログインIDからユーザーの情報を取得
-$users = $account->getAllUsers();
+$users = $user->getAllUsers();
 
 ?>
 <!DOCTYPE html>

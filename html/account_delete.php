@@ -4,11 +4,9 @@ session_start();
 
 require_once '../app/config.php';
 require_once '../app/autoload.php';
+ //ログインチェック、ログインできていなければログインページに遷移できていれば$login_userにログイン者の情報が入る
+ require_once '../app/auth.php';
 
-//ログインしているかチェック
-if (empty($_SESSION['User']['id'])){
-    header('Location: login.php');echo  exit();
-}
 
 //Userクラスをインスタンス化する
 $user = new User() ;
@@ -18,9 +16,6 @@ $delete_target = $user->getById($_REQUEST['id']);
 if (!$delete_target) {
     header('Location: account_list.php');echo  exit();
 }
-
-//削除する側の情報を取ってきて、特権ユーザーであるかをチェックする
-$login_user = $user->getById($_SESSION['User']['id']);
 
 if (!isset($_REQUEST['id']) || $login_user['is_privileged'] !== 1){
     header('Location: account_list.php');echo  exit();
