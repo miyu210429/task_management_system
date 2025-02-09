@@ -89,4 +89,71 @@
   .account-cell a:hover {
     color: #0056b3;
   }
+
   
+  /* 検索フォーム全体 */
+.account-search-form {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* 各入力グループ */
+.account-search-form .form-group {
+  margin-bottom: 15px;
+}
+
+/* ラベル */
+.account-search-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* テキスト・日付入力 */
+.account-search-form input[type="text"],
+.account-search-form input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* 更新日（期間指定）部分のレイアウト */
+.account-search-form .date-range {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-search-form .date-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.account-search-form .date-separator {
+  font-weight: bold;
+  color: #555;
+}
+
+/* 検索ボタン：右寄せで大きめ */
+.account-search-form button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 20px;  /* パディング拡大でボタンを大きく */
+  font-size: 16px;     /* フォントサイズ拡大 */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: block;
+  margin: 10px 0 0 auto; /* 上部余白10px、右寄せ：左側に自動余白 */
+}
+
+.account-search-form button:hover {
+  background-color: #0056b3;
+}

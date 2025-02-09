@@ -82,6 +82,52 @@ class User {
         $stmt = $this->User->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    
+    /**
+     * アカウント一覧の検索システム
+     *
+     * @param  mixed $params
+     * @param  mixed $get_deleted_user
+     * @return array
+     */
+    public function search(array $params, bool $get_deleted_user = false): array {
+        // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
+        $query = "SELECT * FROM users WHERE 1=1";
+        $bindings = [];
+ 
+        // ログイン名で検索（部分一致）
+        if (!empty($params['login_name'])) {
+           $query .= " AND login_name LIKE '%".trim($params['login_name']."%'");
+        }
+ 
+        // ニックネームで検索（部分一致）
+        if (!empty($params['nickname'])) {
+            $query .= " AND nickname LIKE '%".trim($params['nickname']."%'");
+        }
+ 
+        // 更新日の開始日
+        if (!empty($params['updated_at_from'])) {
+             $query .= " AND updated_at >= '".trim($params['updated_at_from'])."'";
+        }
+ 
+        // 更新日の終了日
+        if (!empty($params['updated_at_to'])) {
+            $query .= " AND updated_at <= '".trim($params['updated_at_to'])."'";
+        }
+
+        //削除済みユーザー取得フラグがtrueでない場合は取得しないように
+        if(!$get_deleted_user){
+            $query .= " AND is_deleted = 0"; 
+        }
+ 
+        //id順になるように
+        $query .= " ORDER BY id DESC";
+
+        $stmt = $this->User->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     
+    }
     
     /**
      * userのidからusersテーブルの全データを取得する
