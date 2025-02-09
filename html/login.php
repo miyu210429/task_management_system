@@ -8,8 +8,11 @@ require_once '../app/functions.php';
 if(!empty($_POST)){
   
   $user = new User();
-  $error = $user->validateLogin($_POST['login_name'],$_POST['password'],true);
-  if(!$error){
+  $is_error = false;
+  if(empty($_POST['login_name'] || empty($_POST['password']))){
+    $is_error = true;
+  }
+  if(!$is_error){
     $logininfo = $user->login($_POST['login_name'],$_POST['password']);
     if($logininfo) {
       //$_SESSION['id']だと他にセッションでid持たせたいときにカニバリそうなので$_SESSION['User']['id']とする
