@@ -79,7 +79,7 @@ echo h($_POST['login_name']); ?>">
                 <input type="text" id="nickname" name="nickname" value="<?php if(isset($_POST['nickname']))
 echo h($_POST['nickname']); ?>">
             <?php 
-            if(isset($error_conditions['nickname'])) echo $error_conditions['nickname'];
+            if(isset($error_conditions['nickname']) && is_string($error_conditions['login_name'])) echo $error_conditions['nickname'];
             ?>
             </div>
             
@@ -95,7 +95,7 @@ echo h($_POST['nickname']); ?>">
                 <input type="password" id="password" name="password" value="<?php if(isset($_POST['password']))
 echo h($_POST['password']); ?>">
             <?php 
-            if(isset($error_conditions['password'])) echo $error_conditions['password'];
+            if(isset($error_conditions['password']) && is_string($error_conditions['login_name'])) echo $error_conditions['password'];
             
             ?>
             </div>
