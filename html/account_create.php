@@ -15,38 +15,10 @@ $user = new User();
 //ポストされた情報にエラーがないかチェック
 if (!empty($_POST) ) {
 
-    //メールアドレス
-    $new_email = $user->validateEmail($_POST['email']);
-    if (is_string($new_email)) {
-        $error_conditions['email'] = $new_email;
-    }
-
-    //ログイン名
-    $new_login_name = $user->validateLoginName($_POST['login_name'],false);
-    if (is_string($new_login_name)) {
-        $error_conditions['login_name'] = $new_login_name;
-    }
-    
-    //ニックネーム
-    $new_nickname = $user->validateNickname($_POST['nickname']);
-    if (is_string($new_nickname)){
-        $error_conditions['nickname'] = $new_nickname;
-    }
-
-
-    //パスワード
-    $new_password = $user->validatePassword($_POST['password']);
-    if(is_string($new_password)) {
-        $error_conditions['password'] = $new_password;
-    }
-}
-
-
-//ポストされた情報にエラーがなかったら
-//データベースに情報を挿入する
-
-if(!empty($_POST)) {
-    if (empty($error) && !isset($error_conditions)){
+    $error_conditions = $user->validateInsertInput($_POST);
+    //ポストされた情報にエラーがなかったら
+    //データベースに情報を挿入する
+    if (empty($error_conditions)){
 
         $insert_array['email'] = $_POST['email'];
         $insert_array['login_name'] = $_POST['login_name'];
@@ -59,11 +31,10 @@ if(!empty($_POST)) {
             $insert_array['is_privileged'] = $_POST['is_privileged'];
         }
         
-
         $user->insert($insert_array);
-
         header('Location: account_list.php'); exit();
     }
+
 }
 
 ?>
@@ -90,7 +61,7 @@ if(!empty($_POST)) {
                 <input type="email" id="email" name="email" value="<?php if(isset($_POST['email']))
 echo h($_POST['email']); ?>">
                 <?php 
-                if(isset($error_conditions['email'])) echo $error_conditions['email'];
+                if(isset($error_conditions['email']) && is_string($error_conditions['email'])) echo $error_conditions['email'];
                  ?>
             </div>
             
@@ -99,7 +70,7 @@ echo h($_POST['email']); ?>">
                 <input type="text" id="login_name" name="login_name" value="<?php if(isset($_POST['login_name']))
 echo h($_POST['login_name']); ?>">
             <?php 
-            if(isset($error_conditions['login_name'])) echo $error_conditions['login_name'];
+            if(isset($error_conditions['login_name']) && is_string($error_conditions['login_name'])) echo $error_conditions['login_name'];
             ?>
             </div>
 

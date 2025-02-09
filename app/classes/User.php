@@ -123,65 +123,65 @@ class User {
      * @return bool|array データ取得できたらそのデータを配列で、失敗したらfalseを返す 
      */
     public function login(string $login_name , string $password): bool|array {
-        $login = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND password=? AND is_deleted=0');
-        $login->execute(
+        $stmt = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND password=? AND is_deleted=0');
+        $stmt->execute(
             array(
                 $login_name,
                 sha1($password.USERS_PASSWORD_SALT)
             )
          );
-        return $login->fetch();
+        return $stmt->fetch();
     }
    
     /**
-     * メールアドレスのユニークをチェック 
+     * メールアドレスでuserstableからデータを取ってくる
      *
-     * @param  mixed $unique_email
+     * @param  mixed $email
      * @return bool | array
      */
-    public function getByEmail(string $unique_email) : bool|array {
-        $email = $this->User->prepare('SELECT * FROM users WHERE email=? AND is_deleted=0');
-        $email->execute(
+    public function getByEmail(string $email) : bool|array {
+        $stmt = $this->User->prepare('SELECT * FROM users WHERE email=? AND is_deleted=0');
+        $stmt->execute(
             array(
-                $unique_email
+                $email
             )
         );
-        return $email->fetch();
+        return $stmt->fetch();
 
     }  
 
         
     /**
-     * ログイン名のユニークをチェック 
+     * ログイン名でuserstableからデータを取ってくる 
      * 
-     * @param  mixed $unique_login_name
+     * @param  mixed $login_name
      * @return bool | array
      */
-    public function getByLoginName(string $unique_login_name) : bool|array {
-        $login_name = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND is_deleted=0');
-        $login_name->execute(
+    public function getByLoginName(string $login_name) : bool|array {
+        $stmt = $this->User->prepare('SELECT * FROM users WHERE login_name=? AND is_deleted=0');
+        $stmt->execute(
             array(
-                $unique_login_name
+                $login_name
             )
         );
-        return $login_name->fetch();
+        return $stmt->fetch();
     }  
 
         
     /**
-     * ニックネームのユニークをチェック
+     * ニックネームでuserstableからデータを取ってくる
      *
-     * @param  mixed $unique_nickname
+     * @param  mixed $nickname
      * @return bool | array
      */
-    public function getByNickname(string $unique_nickname) : bool|array {
-        $nickname = $this->User->prepare('SELECT * FROM users WHERE nickname=? AND is_deleted=0');
-        $nickname->execute(
+    public function getByNickname(string $nickname) : bool|array {
+        $stmt = $this->User->prepare('SELECT * FROM users WHERE nickname=? AND is_deleted=0');
+        $stmt->execute(
             array(
-                $unique_nickname
+                $nickname
             )
         );
-        return $nickname->fetch();
+        return $stmt->fetch();
     }  
     
     /**
@@ -192,9 +192,6 @@ class User {
      * @return bool | string
      */
     public function validateEmail(string $email): bool|string {
-        if (isset($email) && $email == '') {
-            return '入力してください';
-        }
 
         if (!ValidationHelper::validateEmail($email)) {
             return "メールアドレスの形式で入力してください。";
@@ -215,12 +212,10 @@ class User {
      * ユニークかどうかのチェック
      *
      * @param  mixed $login_name
+     * @param  bool  $update_mode アップデートのバリデーションで利用する際はtrueで使う
      * @return bool|string
      */
-    public function validateLoginName(string $login_name, bool $login_mode): bool|string {
-        if (isset($login_name) && $login_name == '') {
-            return '入力してください';
-        }
+    public function validateLoginName(string $login_name, bool $update_mode = false): bool|string {
 
         if (!ValidationHelper::validateLength($login_name, 3, 12)) {
             return "ログイン名は3文字以上12文字以下にしてください。";
@@ -230,12 +225,13 @@ class User {
             return "ログイン名は英数字と記号のみ使用できます。";
         }
         
-        if (!$login_mode) {
-            if (self::getByLoginName($login_name)) {
-                return "そのログイン名はすでに登録されています。";
-            }
+        /**
+         * updateの時はこのバリデーション通すとエラーになっちゃうので（自分のレコーどがあるので）
+         * $update_mode trueの時は自分のレコードは除いて考えるような感じでうまいことやってね！
+         */
+        if (self::getByLoginName($login_name)) {
+            return "そのログイン名はすでに登録されています。";
         }
-        
 
         return true;
     }
@@ -248,10 +244,6 @@ class User {
      * @return bool | string
      */
     public function validateNickname(string $nickname): bool|string {
-        if (isset($nickname) && $nickname == '') {
-            return '入力してください';
-        }
-
         if (!ValidationHelper::validateLength($nickname, 3, 10)) {
             return "ニックネームは3文字以上10文字以下にしてください。";
         }
@@ -272,10 +264,6 @@ class User {
      * @return bool
      */
     public function validatePassword(string $password): bool|string {
-        if (isset($password) && $password == '') {
-            return '入力してください';
-        }
-
         if (!ValidationHelper::validateLength($password, 6, 20)) {
             return "パスワードは6文字以上20文字以下にしてください。";
         }
@@ -289,23 +277,42 @@ class User {
 
         
     /**
-     * ログインフォーム用バリデーション
+     * インサートフォーム用のバリデーション
+     * 空白かどうかは各項目のバリデーションに値をわたさなければ行けない関係でこのメソッド内でチェック
      *
-     * @param  mixed $login_name
-     * @param  mixed $password
+     * @param  array $targetInput
      * @return array
      */
-    public function validateLogin(string $login_name, string $password , bool $login_mode = false): array {
+    public function validateInsertInput(array $targetInput): array {
         $errors = [];
 
-        $loginValidation = self::validateLoginName($login_name, $login_mode);
-        if ($loginValidation !== true) {
-            $errors['login_name'] = $loginValidation;
+        /**
+         * emailのvalidation emailが入力されているが空白、もしくは存在しない場合と各種条件を満たしていない場合はエラー情報が入る
+         * 条件のどこにも属さなかった場合（elseだった場合）はバリデーション追加
+         * 他の項目もすべて同じ感じ
+         */ 
+        if ((isset($targetInput['email']) && $targetInput['email'] == '') || !isset($targetInput['email'])) {
+            $errors['email'] = '入力してください';
+        } else if(($emailValidaton = self::validateEmail($targetInput['email'])) !== true){ 
+            $errors['email'] = $emailValidaton;          
         }
 
-        $passwordValidation = self::validatePassword($password);
-        if ($passwordValidation !== true) {
-            $errors['password'] = $passwordValidation;
+        if ((isset($targetInput['login_name']) && $targetInput['login_name'] == '') || !isset($targetInput['login_name'])) {
+            $errors['login_name'] = '入力してください';
+        } else if (($LoginNameValidation = self::validateLoginName($targetInput['login_name'])) !== true) {
+            $errors['login_name'] = $LoginNameValidation;
+        }
+
+        if ((isset($targetInput['nickname']) && $targetInput['nickname'] == '') || !isset($targetInput['nickname'])) {
+            $errors['nickname'] = '入力してください';
+        } else if (($nicknameValidation = self::validateLoginName($targetInput['nickname'])) !== true) {
+            $errors['nickname'] = $nicknameValidation;
+        }
+
+        if ((isset($targetInput['password']) && $targetInput['password'] == '') || !isset($targetInput['password'])) {
+            $errors['password'] = '入力してください';
+        } else if (($passwordValidation = self::validatePassword($targetInput['password'])) !== true) {  
+            $errors['password'] = $$passwordValidation;
         }
 
         return $errors;
