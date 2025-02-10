@@ -18,27 +18,7 @@ $update_user = $user->getById($_REQUEST['id']);
 //ポストされていたらエラーの確認
 if(!empty($_POST)) {
 
-    //更新に必要な項目ならtrue
-    $use_mode['email'] = true;
-    $use_mode['login_name'] = false;
-    $use_mode['nickname'] = true;
-    $use_mode['password'] = false;
-
-    //ポストの情報と編集される人のもともとの情報が一致してなかったらtrue
-    //ポストした情報がすでに存在していたり、存在していても編集される人の情報ならばfalse
-    if ($_POST['email'] !== $update_user['email']) {
-        $validate_mode['email'] = true;
-    } else {
-        $validate_mode['email'] = false;
-    }
-
-    if ($_POST['nickname'] !== $update_user['nickname']) {
-        $validate_mode['nickname'] = true;
-    } else {
-        $validate_mode['nickname'] = false;
-    }
-
-    $error_conditions = $user->validateInsertInput($_POST, $use_mode, $validate_mode);
+    $error_conditions = $user->validateUpdateInput($_POST, $update_user);
 
     //エラーがなければポストの情報を配列に入れてUPDATEする
     if(empty($error_conditions)) {
@@ -53,7 +33,7 @@ if(!empty($_POST)) {
         }
         $update_array['id'] = (int) $_REQUEST['id'];
 
-        $user->updateUser($update_array);
+        $user->update($update_array);
          
         header("Location: /account_list.php") ;exit();
     }

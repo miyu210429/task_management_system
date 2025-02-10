@@ -15,16 +15,7 @@ $user = new User();
 //ポストされた情報にエラーがないかチェック
 if (!empty($_POST) ) {
 
-    $array_mode['email']=true;
-    $array_mode['login_name']=true;
-    $array_mode['nickname']=true;
-    $array_mode['password']=true;
-
-    $validate_mode['email'] = true;
-    $validate_mode['login_name'] = true;
-    $validate_mode['nickname'] = true;
-
-    $error_conditions = $user->validateInsertInput($_POST,$array_mode,$validate_mode);
+    $error_conditions = $user->validateInsertInput($_POST);
     
     //ポストされた情報にエラーがなかったら
     //データベースに情報を挿入する
