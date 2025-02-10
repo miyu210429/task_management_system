@@ -42,12 +42,8 @@ class User {
     /**
      * ユーザー情報をデータベースに挿入する
      *
-     * @param  mixed $new_login_name
-     * @param  mixed $new_email
-     * @param  mixed $new_nickname
-     * @param  mixed $new_password
-     * @param  mixed $new_is_privileged
-     * @return bool
+     * @param  array $post_user_info
+     * @return bool | array
      */
     public function insert(array $post_user_info): bool|array {
         $created_query = $this->User->prepare(
@@ -63,6 +59,26 @@ class User {
         ));
         return $created_query->fetch();
     }
+    
+    /**
+     * ユーザー情報をデータベースに更新する
+     *
+     * @param  array $update_user
+     * @return bool | array
+     */
+    public function update(int $primary_key,array $update_user): bool|array {
+        $update_query = $this->User->prepare(
+            "UPDATE users SET email=?, nickname=?, is_privileged=?, updated_at=NOW() WHERE id=?"
+        );
+        $update_query->execute(array(
+            $update_user['email'],
+            $update_user['nickname'],
+            $update_user['is_privileged'],
+            $primary_key
+        ));
+        return $update_query->fetch();
+    }
+    
 
     /**
      * アカウント一覧ページ用
@@ -132,7 +148,7 @@ class User {
     /**
      * userのidからusersテーブルの全データを取得する
      *
-     * @param  mixed $login_id
+     * @param  int $login_id
      * @return bool | array
      */
     public function getById(int $login_id) : bool | array {
@@ -147,7 +163,7 @@ class User {
      * ユーザー情報を削除するためのもの
      * is_deletedカラムを１にすると削除
      *
-     * @param  mixed $delete_id
+     * @param  int $delete_id
      * @return bool | array
      */
     public function deleteUser(int $delete_id) : bool | array {
@@ -182,7 +198,7 @@ class User {
     /**
      * メールアドレスでuserstableからデータを取ってくる
      *
-     * @param  mixed $email
+     * @param  string $email
      * @return bool | array
      */
     public function getByEmail(string $email) : bool|array {
@@ -200,7 +216,7 @@ class User {
     /**
      * ログイン名でuserstableからデータを取ってくる 
      * 
-     * @param  mixed $login_name
+     * @param  string $login_name
      * @return bool | array
      */
     public function getByLoginName(string $login_name) : bool|array {
@@ -217,7 +233,7 @@ class User {
     /**
      * ニックネームでuserstableからデータを取ってくる
      *
-     * @param  mixed $nickname
+     * @param  string $nickname
      * @return bool | array
      */
     public function getByNickname(string $nickname) : bool|array {
@@ -233,20 +249,25 @@ class User {
     /**
      * メールアドレスのバリデーション
      * ユニークかどうかのチェック
-     *
-     * @param  mixed $email
+     * 
+     * @param  string $email
+     * @param  string $user_info アップデートのバリデーションで利用する際は編集される人の$emailをいれる
      * @return bool | string
      */
-    public function validateEmail(string $email): bool|string {
+    public function validateEmail(string $email, string $user_info = ''): bool|string {
 
         if (!ValidationHelper::validateEmail($email)) {
             return "メールアドレスの形式で入力してください。";
         }
 
-   
-        if (self::getByEmail($email)) {
+        $validate = true;
+        if ($email === $user_info) {
+            $validate = false;
+        } 
+        if ($validate && self::getByEmail($email)) {
             return "そのメールアドレスはすでに登録されています。";
         }
+        
         
         
         return true;
@@ -257,11 +278,11 @@ class User {
      * ログイン名のバリデーション（3～12文字、英数字と記号のみ）
      * ユニークかどうかのチェック
      *
-     * @param  mixed $login_name
-     * @param  bool  $update_mode アップデートのバリデーションで利用する際はtrueで使う
+     * @param  string $login_name
+     * @param  string  $user_info アップデートのバリデーションで利用する際は、編集される人のlogin_nameをいれる
      * @return bool|string
      */
-    public function validateLoginName(string $login_name, bool $update_mode = false): bool|string {
+    public function validateLoginName(string $login_name, string $user_info = ''): bool|string {
 
         if (!ValidationHelper::validateLength($login_name, 3, 12)) {
             return "ログイン名は3文字以上12文字以下にしてください。";
@@ -270,15 +291,17 @@ class User {
         if (!ValidationHelper::validateAlphaNumSymbols($login_name)) {
             return "ログイン名は英数字と記号のみ使用できます。";
         }
-        
-        /**
-         * updateの時はこのバリデーション通すとエラーになっちゃうので（自分のレコーどがあるので）
-         * $update_mode trueの時は自分のレコードは除いて考えるような感じでうまいことやってね！
-         */
-        if (self::getByLoginName($login_name)) {
-            return "そのログイン名はすでに登録されています。";
+            
+        $validate = true;
+        if ($login_name === $user_info) {
+            $validate = false;
         }
 
+        if ($validate && self::getByLoginName($login_name)) {
+            return "そのログイン名はすでに登録されています。";
+        }
+        
+        
         return true;
     }
 
@@ -286,27 +309,31 @@ class User {
      * ニックネームのバリデーション　（3~10文字）
      * ユニークかどうかのチェック
      *
-     * @param  mixed $nickname
+     * @param  string $nickname
+     * @param  string $user_info アップデートのバリデーションで利用する際は編集される人の$nicknameをいれる
      * @return bool | string
      */
-    public function validateNickname(string $nickname): bool|string {
+    public function validateNickname(string $nickname, string $user_info = ''): bool|string {
         if (!ValidationHelper::validateLength($nickname, 3, 10)) {
             return "ニックネームは3文字以上10文字以下にしてください。";
         }
 
- 
-        if (self::getByNickname($nickname)) {
+        $validate = true;
+        if ($nickname === $user_info) {
+            $validate = false;    
+        }
+        if ($validate && self::getByNickname($nickname)) {
             return "そのニックネームはすでに登録されています。";
         }
         
-
-        return true;
+        
+         return true;
     }
         
     /**
      * パスワードのバリデーション（6～20文字）
      *
-     * @param  mixed $password
+     * @param  string $password
      * @return bool
      */
     public function validatePassword(string $password): bool|string {
@@ -337,29 +364,71 @@ class User {
          * 条件のどこにも属さなかった場合（elseだった場合）はバリデーション追加
          * 他の項目もすべて同じ感じ
          */ 
+
         if ((isset($targetInput['email']) && $targetInput['email'] == '') || !isset($targetInput['email'])) {
             $errors['email'] = '入力してください';
         } else if(($emailValidaton = self::validateEmail($targetInput['email'])) !== true){ 
             $errors['email'] = $emailValidaton;          
         }
+    
+
 
         if ((isset($targetInput['login_name']) && $targetInput['login_name'] == '') || !isset($targetInput['login_name'])) {
             $errors['login_name'] = '入力してください';
         } else if (($LoginNameValidation = self::validateLoginName($targetInput['login_name'])) !== true) {
             $errors['login_name'] = $LoginNameValidation;
         }
+    
+
 
         if ((isset($targetInput['nickname']) && $targetInput['nickname'] == '') || !isset($targetInput['nickname'])) {
             $errors['nickname'] = '入力してください';
-        } else if (($nicknameValidation = self::validateLoginName($targetInput['nickname'])) !== true) {
+        } else if (($nicknameValidation = self::validateNickname($targetInput['nickname'])) !== true) {
             $errors['nickname'] = $nicknameValidation;
         }
+    
 
         if ((isset($targetInput['password']) && $targetInput['password'] == '') || !isset($targetInput['password'])) {
             $errors['password'] = '入力してください';
         } else if (($passwordValidation = self::validatePassword($targetInput['password'])) !== true) {  
-            $errors['password'] = $$passwordValidation;
+            $errors['password'] = $passwordValidation;
         }
+    
+
+        return $errors;
+    }
+
+    
+    /**
+     * アップデート用のバリデーション
+     * 空白かどうかは各項目のバリデーションに値をわたさなければ行けない関係でこのメソッド内でチェック
+     *　$user_infoを配列として受取り、validateEmailの引数として渡す(ここでは編集される人の情報)
+     * 
+     * @param  array $targetInput
+     * @param  array $user_info
+     * @return array
+     */
+    public function validateUpdateInput(array $targetInput, array $user_info): array {
+        $errors = [];
+
+        /**
+         * emailのvalidation emailが入力されているが空白、もしくは存在しない場合と各種条件を満たしていない場合はエラー情報が入る
+         * 条件のどこにも属さなかった場合（elseだった場合）はバリデーション追加
+         * 他の項目もすべて同じ感じ
+         */ 
+
+            if ((isset($targetInput['email']) && $targetInput['email'] == '') || !isset($targetInput['email'])) {
+                $errors['email'] = '入力してください';
+            } else if(($emailValidaton = self::validateEmail($targetInput['email'],$user_info['email'])) !== true){ 
+                $errors['email'] = $emailValidaton;          
+            }
+
+
+            if ((isset($targetInput['nickname']) && $targetInput['nickname'] == '') || !isset($targetInput['nickname'])) {
+                $errors['nickname'] = '入力してください';
+            } else if (($nicknameValidation = self::validateNickname($targetInput['nickname'],$user_info['nickname'])) !== true) {
+                $errors['nickname'] = $nicknameValidation;
+            }
 
         return $errors;
     }

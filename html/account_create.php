@@ -16,6 +16,7 @@ $user = new User();
 if (!empty($_POST) ) {
 
     $error_conditions = $user->validateInsertInput($_POST);
+    
     //ポストされた情報にエラーがなかったら
     //データベースに情報を挿入する
     if (empty($error_conditions)){
@@ -36,7 +37,6 @@ if (!empty($_POST) ) {
     }
 
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -95,8 +95,7 @@ echo h($_POST['nickname']); ?>">
                 <input type="password" id="password" name="password" value="<?php if(isset($_POST['password']))
 echo h($_POST['password']); ?>">
             <?php 
-            if(isset($error_conditions['password']) && is_string($error_conditions['login_name'])) echo $error_conditions['password'];
-            
+            if(isset($error_conditions['password']) && is_string($error_conditions['password'])) echo $error_conditions['password'];
             ?>
             </div>
                 <button type="submit">作成</button>
