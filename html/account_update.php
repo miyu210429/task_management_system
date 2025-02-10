@@ -31,9 +31,8 @@ if(!empty($_POST)) {
         } else {
             $update_array['is_privileged'] = $_POST['is_privileged'];
         }
-        $update_array['id'] = (int) $_REQUEST['id'];
 
-        $user->update($update_array);
+        $user->update($_REQUEST['id'],$update_array);
          
         header("Location: /account_list.php") ;exit();
     }
