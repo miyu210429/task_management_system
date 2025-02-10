@@ -52,7 +52,7 @@ $users = $user->getAllUsers();
                 <div class="account-cell cell-edit">
 
                 <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $user['id']): ?>
-                  <a href="/account_update.php">編集</a> 
+                  <a href="account_update.php?id=<?php echo h($user['id']); ?>">編集</a> 
                 <?php endif ?>
                 </div>
                  

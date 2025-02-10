@@ -1,7 +1,4 @@
 <?php
-//セッションを利用可能にする
-session_start();
-
 require_once '../app/config.php';
 require_once '../app/autoload.php';
  //ログインチェック、ログインできていなければログインページに遷移できていれば$login_userにログイン者の情報が入る

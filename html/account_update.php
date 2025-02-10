@@ -1,3 +1,66 @@
+<?php
+require_once '../app/autoload.php';
+require_once '../app/config.php';
+require_once '../app/functions.php';
+require_once '../app/auth.php';
+
+if ($login_user['is_privileged'] !== 1 && $_SESSION['User']['id'] != $_REQUEST['id']) {
+    header("Location: /account_list.php");
+    exit();
+}
+
+//Userクラスをインスタンス化する
+$user = new User();
+
+//編集される人の情報を取ってくる
+$update_user = $user->getById($_REQUEST['id']);
+
+//ポストされていたらエラーの確認
+if(!empty($_POST)) {
+
+    //更新に必要な項目ならtrue
+    $use_mode['email'] = true;
+    $use_mode['login_name'] = false;
+    $use_mode['nickname'] = true;
+    $use_mode['password'] = false;
+
+    //ポストの情報と編集される人のもともとの情報が一致してなかったらtrue
+    //ポストした情報がすでに存在していたり、存在していても編集される人の情報ならばfalse
+    if ($_POST['email'] !== $update_user['email']) {
+        $validate_mode['email'] = true;
+    } else {
+        $validate_mode['email'] = false;
+    }
+
+    if ($_POST['nickname'] !== $update_user['nickname']) {
+        $validate_mode['nickname'] = true;
+    } else {
+        $validate_mode['nickname'] = false;
+    }
+
+    $error_conditions = $user->validateInsertInput($_POST, $use_mode, $validate_mode);
+
+    //エラーがなければポストの情報を配列に入れてUPDATEする
+    if(empty($error_conditions)) {
+
+        $update_array['email'] = $_POST['email'];
+        $update_array['nickname'] = $_POST['nickname'];
+
+        if(empty($_POST['is_privileged'])){
+            $update_array['is_privileged'] = $update_user['is_privileged'];
+        } else {
+            $update_array['is_privileged'] = $_POST['is_privileged'];
+        }
+        $update_array['id'] = (int) $_REQUEST['id'];
+
+        $user->updateUser($update_array);
+         
+        header("Location: /account_list.php") ;exit();
+    }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -13,35 +76,37 @@
     <main class="main-content">
         <div class="content-wrapper">
             <h1>アカウント編集</h1>
-            <p class="account-info">美優さんのアカウント</p>
-            <form action="/" method="post" class="account-form">
+            <p class="account-info"><?php echo $update_user['login_name'] ?>さんのアカウント</p>
+            <form action="" method="post" class="account-form">
             <div class="form-group">
                 <label for="email">メールアドレス</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="<?php if(isset($_POST['email']))
+echo h($_POST['email']); ?>">
+            <?php
+            if(isset($error_conditions['email']) && is_string($error_conditions['email'])) echo $error_conditions['email']
+            ?>
             </div>
             
-            <div class="form-group">
-                <label for="username">ログイン名</label>
-                <input type="text" id="username" name="username" required>
-            </div>
 
             <div class="form-group">
                 <label for="nickname">ニックネーム(表示名)</label>
-                <input type="text" id="nickname" name="nickname" required>
+                <input type="text" id="nickname" name="nickname" value="<?php if(isset($_POST['nickname']))
+echo h($_POST['nickname']); ?>">
+            <?php
+            if(isset($error_conditions['nickname']) && is_string($error_conditions['nickname'])) echo $error_conditions['nickname']
+            ?>
             </div>
             
             <div class="form-group checkbox-group">
-                <label for="is_admin">
-                <input type="checkbox" id="is_admin" name="is_admin" value="1">
+            <?php  
+            if($login_user['is_privileged'] === 1 && $login_user['id'] != $_REQUEST['id'] ) : ?>
+                <label for="is_privileged">
+                <input type="checkbox" id="is_privileged" name="is_privileged" value="1">
                 特権ユーザー（はいの場合チェック）
                 </label>
+            <?php endif ?>
             </div>
-            
-            <div class="form-group">
-                <label for="password">パスワード</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            
+
             <div class="form-group">
                 <button type="submit">更新</button>
             </div>
