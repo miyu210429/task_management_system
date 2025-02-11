@@ -8,7 +8,7 @@ require_once '../app/auth.php';
 $user = new User();
 $task = new Task();
 
-//すべてのユーザーの情報を取ってくる
+//すべてのユーザーのidとnicknameの情報を取ってくる
 $files = 'id,nickname';
 $all_users = $user->getAllUsers($files);
 

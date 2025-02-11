@@ -86,7 +86,7 @@ class User {
      * get_deleted_userがtrueの場合は削除済みのユーザー情報も取得する
      * (引数が渡されなかった場合はデフォルトで削除済みユーザーは取得しない)
      * 
-     * @param array $fields selectする項目を文字列でいれる(値が入っていなければすべてのカラムのデータを取ってくる)
+     * @param string $fields selectする項目を文字列でいれる(値が入っていなければすべてのカラムのデータを取ってくる)
      * @param bool $get_deleted_user 削除済みユーザーを取得するかどうか
      * @return array
      */
