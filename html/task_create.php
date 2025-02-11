@@ -9,7 +9,9 @@ $user = new User();
 $task = new Task();
 
 //すべてのユーザーの情報を取ってくる
-$all_users = $user->getAllUsers();
+$files = 'id,nickname';
+$all_users = $user->getAllUsers($files);
+
 
 if (!empty($_POST)) {
     //バリデーションをチェック
@@ -57,8 +59,7 @@ echo h($_POST['name']); ?>">
             
             <div class="form-group">
                 <label for="detail">タスク詳細</label>
-                <textarea id="detail" name="detail" rows="15" value="<?php if(isset($_POST['detail']))
-echo h($_POST['detail']); ?>"></textarea>
+                <textarea id="detail" name="detail" rows="15"><?php  if(isset($_POST['detail'])) echo $_POST['detail'] ?></textarea>
             <?php 
             if(isset($error_conditions['detail']) && is_string($error_conditions['detail'])) echo $error_conditions['detail'];
             ?>
@@ -69,7 +70,11 @@ echo h($_POST['detail']); ?>"></textarea>
                 <select id="user_id" name="user_id">
                 <option value="">-- 選択してください --</option>
                 <?php  foreach ($all_users as $user_info) : ?>
-                <option value="<?php echo $user_info['id']?>"><?php echo $user_info['nickname'];  endforeach ?></option>
+                    <option value="<?php echo $user_info['id']?>"
+                     <?if(isset($_POST['user_id']) && $_POST['user_id'] == $user_info['id']):?>selected<?php endif;?>>
+                        <?php echo $user_info['nickname'];?>
+                    </option>
+                <?php endforeach ?>
                 </select>
             <?php 
                 if (isset($error_conditions['user_id']) && is_string($error_conditions['user_id'])) echo $error_conditions['user_id'];

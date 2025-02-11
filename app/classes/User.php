@@ -86,14 +86,16 @@ class User {
      * get_deleted_userがtrueの場合は削除済みのユーザー情報も取得する
      * (引数が渡されなかった場合はデフォルトで削除済みユーザーは取得しない)
      * 
+     * @param array $fields selectする項目を文字列でいれる(値が入っていなければすべてのカラムのデータを取ってくる)
      * @param bool $get_deleted_user 削除済みユーザーを取得するかどうか
      * @return array
      */
-    public function getAllUsers(bool $get_deleted_user = false): array {
-        $query = "SELECT * FROM users";
-        if(!$get_deleted_user){
+    public function getAllUsers(string $fields = '*', bool $get_deleted_user = false): array {
+        $query = "SELECT $fields FROM users";
+        if(!$get_deleted_user) {
             $query .= " WHERE is_deleted = 0"; //WHERE の前に空白スペース入れないとエラーになる
         }
+    
         $query .= " ORDER BY id DESC";
         $stmt = $this->User->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
