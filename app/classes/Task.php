@@ -77,6 +77,30 @@ class Task {
         ));
         return $created_query->fetch();
     }
+
+    
+    /**
+     * タスクの情報を更新する
+     *
+     * @param  int $primary_key
+     * @param  array $update_task
+     * @return bool | array
+     */
+    public function update(int $primary_key, array $update_task): bool|array {
+        $update_query = $this->Task->prepare(
+            "UPDATE tasks SET name=?, detail=?, user_id=?, progress=?, deadline=?, updated_at=NOW() WHERE id=?"
+        );
+        $update_query->execute(array(
+            $update_task['name'],
+            $update_task['detail'],
+            $update_task['user_id'],
+            $update_task['progress'],
+            $update_task['deadline'],
+            $primary_key
+        ));
+        return $update_query->fetch();
+    }
+
     
     /**
      * タスク一覧ページ用
@@ -123,6 +147,7 @@ class Task {
     
     /**
      * タスクのバリデーションチェック
+     * insert用
      *
      * @param  array $targetInput
      * @return array
@@ -147,7 +172,6 @@ class Task {
             $errors['user_id'] = '入力してください';
         }
     
-    
         if ((isset($targetInput['deadline']) && $targetInput['deadline'] == '') || !isset($targetInput['deadline'])) {
             $errors['deadline'] = '入力してください';
         }
@@ -156,6 +180,47 @@ class Task {
         return $errors;
     }
 
+
+        /**
+     * タスクのバリデーションチェック
+     * update用
+     *
+     * @param  array $targetInput
+     * @return array
+     */
+    public function validateUpdateInput(array $targetInput): array {
+        $errors = [];
+
+        /**
+         * nameのvalidation nameが入力されているが空白、もしくは存在しない場合はエラー情報が入る
+         * 他の項目もすべて同じ感じ
+         */ 
+
+        if ((isset($targetInput['name']) && $targetInput['name'] == '') || !isset($targetInput['name'])) {
+            $errors['name'] = '入力してください';
+        }
+
+        if ((isset($targetInput['detail']) && $targetInput['detail'] == '') || !isset($targetInput['detail'])) {
+            $errors['detail'] = '入力してください';
+        }
+
+        if ((isset($targetInput['user_id']) && $targetInput['user_id'] == '') || !isset($targetInput['user_id'])) {
+            $errors['user_id'] = '入力してください';
+        }
+
+       
+        if ((isset($targetInput['progress']) && $targetInput['progress'] == '') || !isset($targetInput['progress'])) {
+            $errors['progress'] = '入力してください';
+        }
+        
+    
+        if ((isset($targetInput['deadline']) && $targetInput['deadline'] == '') || !isset($targetInput['deadline'])) {
+            $errors['deadline'] = '入力してください';
+        }
+    
+
+        return $errors;
+    }
 
 
 }

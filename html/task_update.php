@@ -1,3 +1,43 @@
+<?php
+require_once '../app/autoload.php';
+require_once '../app/config.php';
+require_once '../app/functions.php';
+require_once '../app/auth.php';
+
+$user = new User();
+$task = new Task();
+
+//すべてのユーザーのidとnicknameの情報を取ってくる
+$fields = 'id,nickname';
+$all_users = $user->getAllUsers($fields);
+
+//編集するタスクの情報を取ってくる
+$update_task = $task->getByTaskId($_REQUEST['task_id']);
+$progresses = $task->getPregressLabels();
+
+if(!empty($_POST)) {
+    $error_conditions = $task->validateUpdateInput($_POST);
+    
+    if(empty($error_conditions)){
+        $update_array['name'] = $_POST['name'];
+        $update_array['detail'] = $_POST['detail'];
+        $update_array['user_id'] = $_POST['user_id'];
+        $update_array['progress'] = $_POST['progress'];
+        $update_array['deadline'] = $_POST['deadline'];
+
+        $primary_key = (int) $_REQUEST['task_id'];
+        $task->update($primary_key,$update_array);
+
+        header("Location: /task_list.php") ;exit();
+    } else {
+        $update_task['name'] = $_POST['name'];
+        $update_task['detail'] = $_POST['detail'];
+        $update_task['progress'] = $_POST['progress'];
+        $update_task['user_id'] = $_POST['user_id'];
+    }   
+}
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,31 +52,63 @@
     <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
-            <h1>タスクID:121の更新</h1>
-            <form action="/" method="post" class="task-form">
+            <h1>タスクID:<?php echo $update_task['id'] ?>の更新</h1>
+            <form action="" method="post" class="task-form">
             <div class="form-group">
-                <label for="task_name">タスク名</label>
-                <input type="text" id="task_name" name="task_name" required>
+                <label for="name">タスク名</label>
+                <input type="text" id="name" name="name" value="<?php echo h($update_task['detail']); ?>">
+            <?php
+            if(isset($error_conditions['name']) && is_string($error_conditions['name'])){ echo $error_conditions['name']; }?>
             </div>
             
             <div class="form-group">
-                <label for="task_detail">タスク詳細</label>
-                <textarea id="task_detail" name="task_detail" rows="15" required></textarea>
+                <label for="detail">タスク詳細</label>
+                <textarea id="detail" name="detail" rows="15"><?php echo h($update_task['detail']); ?>
+                </textarea>
+                <?php 
+                if(isset($error_conditions['detail']) && is_string($error_conditions['detail'])) echo $error_conditions['detail'];
+                ?>
             </div>
             
             <div class="form-group">
-                <label for="assignee">担当者</label>
-                <select id="assignee" name="assignee" required>
+                <label for="user_id">担当者</label>
+                <select id="user_id" name="user_id">
                 <option value="">-- 選択してください --</option>
-                <option value="1">美優</option>
-                <option value="2">明典</option>
-                <option value="3">麻紗美</option>
+                <?php  foreach ($all_users as $user_info) : ?>
+                    <option value="<?php echo $user_info['id']?>"
+                    <?php 
+                    if(isset($update_task['user_id']) && $update_task['user_id'] == $user_info['id']):?>selected<?php endif;?>>
+                        <?php echo $user_info['nickname'];?>
+                    </option>
+                <?php endforeach ?>
                 </select>
+            <?php 
+                if (isset($error_conditions['user_id']) && is_string($error_conditions['user_id'])) echo $error_conditions['user_id'];
+            ?>
+            </div>
+
+            <div class="form-group">
+                <label for="progress">進捗</label>
+                <select id="progress" name="progress">
+                <option value="">-- 選択してください --</option>
+                <?php foreach($progresses as $key =>  $progress):?>
+                    <option value="<?php echo $key;?>"<? if(isset($update_task['progress']) && $update_task['progress'] == $key):?>selected<?php endif;?>>
+                        <?php echo $progress;?>
+                    </option>
+                <? endforeach;?>
+                </select>
+                <?php 
+                if (isset($error_conditions['progress']) && is_string($error_conditions['progress'])) echo $error_conditions['progress'];
+                ?>
+
             </div>
             
             <div class="form-group">
                 <label for="deadline">タスク期限</label>
-                <input type="date" id="deadline" name="deadline" required>
+                <input type="date" id="deadline" name="deadline" value="<?php  echo h($update_task['deadline']);?>">
+                <?php 
+                if(isset($error_conditions['deadline']) && is_string($error_conditions['deadline'])) echo $error_conditions['deadline'];
+                 ?>
             </div>
             
             <div class="form-group">

@@ -37,7 +37,7 @@ $tasks = $task->getAllTasks();
             <!-- 検索フォームセクション -->
             <section class="search-form-section">
             <h1>タスク一覧</h1>
-            <form action="/" method="get" class="search-form">
+            <form action="" method="get" class="search-form">
                 <div class="form-group">
                 <label for="assignee">担当者</label>
                 <select name="assignee" id="assignee">
