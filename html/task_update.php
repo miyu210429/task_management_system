@@ -16,7 +16,7 @@ $update_task = $task->getByTaskId($_REQUEST['task_id']);
 $progresses = $task->getPregressLabels();
 
 if(!empty($_POST)) {
-    $error_conditions = $task->validateInsertInput($_POST,true);
+    $error_conditions = $task->validateUpdateInput($_POST);
     
     if(empty($error_conditions)){
         $update_array['name'] = $_POST['name'];
@@ -105,8 +105,7 @@ if(!empty($_POST)) {
             
             <div class="form-group">
                 <label for="deadline">タスク期限</label>
-                <input type="date" id="deadline" name="deadline" value="<?php if(empty($_POST)) echo h($update_task['deadline']);
-                if(isset($_POST['deadline'])) echo h($_POST['deadline']); ?>">
+                <input type="date" id="deadline" name="deadline" value="<?php  echo h($update_task['deadline']);?>">
                 <?php 
                 if(isset($error_conditions['deadline']) && is_string($error_conditions['deadline'])) echo $error_conditions['deadline'];
                  ?>

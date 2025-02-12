@@ -147,12 +147,48 @@ class Task {
     
     /**
      * タスクのバリデーションチェック
+     * insert用
      *
      * @param  array $targetInput
-     * @param  bool $progress_mode //trueを入れればprogressも評価される
      * @return array
      */
-    public function validateInsertInput(array $targetInput, bool $progress_mode = false): array {
+    public function validateInsertInput(array $targetInput): array {
+        $errors = [];
+
+        /**
+         * nameのvalidation nameが入力されているが空白、もしくは存在しない場合はエラー情報が入る
+         * 他の項目もすべて同じ感じ
+         */ 
+
+        if ((isset($targetInput['name']) && $targetInput['name'] == '') || !isset($targetInput['name'])) {
+            $errors['name'] = '入力してください';
+        }
+
+        if ((isset($targetInput['detail']) && $targetInput['detail'] == '') || !isset($targetInput['detail'])) {
+            $errors['detail'] = '入力してください';
+        }
+
+        if ((isset($targetInput['user_id']) && $targetInput['user_id'] == '') || !isset($targetInput['user_id'])) {
+            $errors['user_id'] = '入力してください';
+        }
+    
+        if ((isset($targetInput['deadline']) && $targetInput['deadline'] == '') || !isset($targetInput['deadline'])) {
+            $errors['deadline'] = '入力してください';
+        }
+    
+
+        return $errors;
+    }
+
+
+        /**
+     * タスクのバリデーションチェック
+     * update用
+     *
+     * @param  array $targetInput
+     * @return array
+     */
+    public function validateUpdateInput(array $targetInput): array {
         $errors = [];
 
         /**
@@ -172,11 +208,11 @@ class Task {
             $errors['user_id'] = '入力してください';
         }
 
-        if($progress_mode) {
-            if ((isset($targetInput['progress']) && $targetInput['progress'] == '') || !isset($targetInput['progress'])) {
-                $errors['progress'] = '入力してください';
-            }
+       
+        if ((isset($targetInput['progress']) && $targetInput['progress'] == '') || !isset($targetInput['progress'])) {
+            $errors['progress'] = '入力してください';
         }
+        
     
         if ((isset($targetInput['deadline']) && $targetInput['deadline'] == '') || !isset($targetInput['deadline'])) {
             $errors['deadline'] = '入力してください';
@@ -185,7 +221,6 @@ class Task {
 
         return $errors;
     }
-
 
 
 }
