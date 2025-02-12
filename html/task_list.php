@@ -89,22 +89,22 @@ $tasks = $task->getAllTasks();
             </div>
             <?php foreach($tasks as $task){?>
             <div class="task-row">
-                <div class="task-cell cell-id"><?php echo $task['id'] ?> </div>
-                <div class="task-cell cell-title"><?php echo $task['name'] ?> </div>
+                <div class="task-cell cell-id"><?php echo h($task['id']) ?> </div>
+                <div class="task-cell cell-title"><?php echo h($task['name']) ?> </div>
                 <div class="task-cell cell-assignee">
                     <?php 
-                     echo $task_mana[$task['user_id']];
+                     echo h($task_mana[$task['user_id']]);
                     ?> 
                 </div>
                 <div class="task-cell cell-status">
                     <?php
-                    echo Task::getPregressLabels($task['progress']);
+                    echo h(Task::getPregressLabels($task['progress']));
                     ?>
                 </div>
                 
                 <div>
                 <?php if($task['deadline'] < date("Y-m-d")){?>
-                <font color="red"><?php echo $task['deadline'] ?></font>
+                <font color="red"><?php echo h($task['deadline']) ?></font>
                 <?php } else { ?> 
                 <p> <?php echo $task['deadline']; }?> </p>
                 </div>
