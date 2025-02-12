@@ -77,6 +77,30 @@ class Task {
         ));
         return $created_query->fetch();
     }
+
+    
+    /**
+     * タスクの情報を更新する
+     *
+     * @param  int $primary_key
+     * @param  array $update_task
+     * @return bool | array
+     */
+    public function update(int $primary_key, array $update_task): bool|array {
+        $update_query = $this->Task->prepare(
+            "UPDATE tasks SET name=?, detail=?, user_id=?, progress=?, deadline=?, updated_at=NOW() WHERE id=?"
+        );
+        $update_query->execute(array(
+            $update_task['name'],
+            $update_task['detail'],
+            $update_task['user_id'],
+            $update_task['progress'],
+            $update_task['deadline'],
+            $primary_key
+        ));
+        return $update_query->fetch();
+    }
+
     
     /**
      * タスク一覧ページ用
@@ -125,9 +149,10 @@ class Task {
      * タスクのバリデーションチェック
      *
      * @param  array $targetInput
+     * @param  bool $progress_mode //trueを入れればprogressも評価される
      * @return array
      */
-    public function validateInsertInput(array $targetInput): array {
+    public function validateInsertInput(array $targetInput, bool $progress_mode = false): array {
         $errors = [];
 
         /**
@@ -146,7 +171,12 @@ class Task {
         if ((isset($targetInput['user_id']) && $targetInput['user_id'] == '') || !isset($targetInput['user_id'])) {
             $errors['user_id'] = '入力してください';
         }
-    
+
+        if($progress_mode) {
+            if ((isset($targetInput['progress']) && $targetInput['progress'] == '') || !isset($targetInput['progress'])) {
+                $errors['progress'] = '入力してください';
+            }
+        }
     
         if ((isset($targetInput['deadline']) && $targetInput['deadline'] == '') || !isset($targetInput['deadline'])) {
             $errors['deadline'] = '入力してください';

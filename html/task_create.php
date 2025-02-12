@@ -59,7 +59,7 @@ echo h($_POST['name']); ?>">
             
             <div class="form-group">
                 <label for="detail">タスク詳細</label>
-                <textarea id="detail" name="detail" rows="15"><?php  if(isset($_POST['detail'])) echo $_POST['detail'] ?></textarea>
+                <textarea id="detail" name="detail" rows="15"><?php  if(isset($_POST['detail'])) echo h($_POST['detail']) ?></textarea>
             <?php 
             if(isset($error_conditions['detail']) && is_string($error_conditions['detail'])) echo $error_conditions['detail'];
             ?>
