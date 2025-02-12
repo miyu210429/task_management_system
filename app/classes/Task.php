@@ -43,6 +43,22 @@ class Task {
 
     
     /**
+     * progressラベルの使用
+     *
+     * @param  int $progress 値が入ってなかったら$pregressLabelsの配列がreturnされる
+     * @return int | array
+     */
+    public static function getPregressLabels(?int $progress_number = null): string|array {
+        if($progress_number !== null) {
+            return self::$pregressLabels[$progress_number] ?? '不明';
+        }
+        
+        return self::$pregressLabels;
+        
+    }
+
+    
+    /**
      * タスク情報をデータベースに挿入する
      *
      * @param  array $post_task_info
@@ -51,7 +67,7 @@ class Task {
     public function insert(array $post_task_info): bool|array {
         $created_query = $this->Task->prepare(
             "INSERT INTO tasks SET name=?, detail=?, user_id=?, progress=0,
-             deadline=?, created_at=NOW(), updated_at=NOW(), is_deleted=0
+             deadline=?, created_at=NOW(), updated_at=NOW()
             ");
         $created_query->execute(array(
             $post_task_info['name'],
@@ -60,6 +76,18 @@ class Task {
             $post_task_info['deadline']
         ));
         return $created_query->fetch();
+    }
+    
+    /**
+     * タスク一覧ページ用
+     * 全ページのタスクを取得
+     * 
+     * @return array
+     */
+    public function getAllTasks():array {
+        $query = "SELECT * FROM tasks ORDER BY deadline ASC";
+        $stmt = $this->Task->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 

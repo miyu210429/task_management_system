@@ -1,3 +1,25 @@
+<?php
+require_once '../app/autoload.php';
+require_once '../app/config.php';
+require_once '../app/functions.php';
+require_once '../app/auth.php';
+
+$user = new User();
+$task = new Task();
+
+//idとnicknameの情報を全ユーザーから取得
+$fields = 'id,nickname';
+$managers = $user->getAllUsers($fields);
+
+foreach ($managers as $manager) {
+    $task_mana[$manager['id']] = $manager['nickname'];
+        
+}
+
+//すべてのタスクを取得
+$tasks = $task->getAllTasks();
+
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -65,21 +87,39 @@
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
-            <?php for($i=0;$i<10;$i++){?>
+            <?php foreach($tasks as $task){?>
             <div class="task-row">
-                <div class="task-cell cell-id">1</div>
-                <div class="task-cell cell-title">タスクタイトルサンプルそんなに長いものいれられないかも</div>
-                <div class="task-cell cell-assignee">美優</div>
-                <div class="task-cell cell-status">進行中</div>
-                <div class="task-cell cell-deadline">2024-02-15</div>
+                <div class="task-cell cell-id"><?php echo h($task['id']) ?> </div>
+                <div class="task-cell cell-title"><?php echo h($task['name']) ?> </div>
+                <div class="task-cell cell-assignee">
+                    <?php 
+                     echo h($task_mana[$task['user_id']]);
+                    ?> 
+                </div>
+                <div class="task-cell cell-status">
+                    <?php
+                    echo h(Task::getPregressLabels($task['progress']));
+                    ?>
+                </div>
+                
+                <div>
+                <?php if($task['deadline'] < date("Y-m-d")){?>
+                <font color="red"><?php echo h($task['deadline']) ?></font>
+                <?php } else { ?> 
+                <p> <?php echo h($task['deadline']); }?> </p>
+                </div>
+                
+                
                 <div class="task-cell cell-edit">
-                <a href="/task_update.php?id=1">編集</a>
+                <a href="task_update.php?id=<?php $task['id']?>">編集</a>
                 </div>
                 <div class="task-cell cell-delete">
-                <a href="task_delete.php?id=1" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task['user_id']): ?>
+                <a href="task_delete.php?id=<?php $task['id']?>" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <?php endif ?>
                 </div>
             </div>
-            <?php } ?>
+            <?php  } ?>
             </section>
             
             <?php /*
