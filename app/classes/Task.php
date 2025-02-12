@@ -67,7 +67,7 @@ class Task {
     public function insert(array $post_task_info): bool|array {
         $created_query = $this->Task->prepare(
             "INSERT INTO tasks SET name=?, detail=?, user_id=?, progress=0,
-             deadline=?, created_at=NOW(), updated_at=NOW(), is_deleted=0
+             deadline=?, created_at=NOW(), updated_at=NOW()
             ");
         $created_query->execute(array(
             $post_task_info['name'],
@@ -82,16 +82,10 @@ class Task {
      * タスク一覧ページ用
      * 全ページのタスクを取得
      * 
-     *@param  mixed $get_deleted_task　trueなら削除されたタスクも取ってくる
      * @return array
      */
-    public function getAllTasks(bool $get_deleted_task = false):array {
-        $query = "SELECT * FROM tasks";
-        if(!$get_deleted_task) {
-            $query .= " WHERE is_deleted = 0"; //WHERE の前に空白スペース入れないとエラーになる
-        }
-    
-        $query .= " ORDER BY deadline ASC";
+    public function getAllTasks():array {
+        $query = "SELECT * FROM tasks ORDER BY deadline ASC";
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -11,6 +11,11 @@ $task = new Task();
 $fields = 'id,nickname';
 $managers = $user->getAllUsers($fields);
 
+foreach ($managers as $manager) {
+    $task_mana[$manager['id']] = $manager['nickname'];
+        
+}
+
 //すべてのタスクを取得
 $tasks = $task->getAllTasks();
 
@@ -88,16 +93,12 @@ $tasks = $task->getAllTasks();
                 <div class="task-cell cell-title"><?php echo $task['name'] ?> </div>
                 <div class="task-cell cell-assignee">
                     <?php 
-                    foreach($managers as $manager) {
-                        $task_mana[$manager['id']] = $manager['nickname'];
-                    }
-                    echo $task_mana[$manager['id']] 
+                     echo $task_mana[$task['user_id']];
                     ?> 
                 </div>
                 <div class="task-cell cell-status">
                     <?php
-                    $task_progress = Task::getPregressLabels($task['progress']);
-                    echo $task_progress
+                    echo Task::getPregressLabels($task['progress']);
                     ?>
                 </div>
                 
@@ -110,12 +111,12 @@ $tasks = $task->getAllTasks();
                 
                 
                 <div class="task-cell cell-edit">
-                <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $manager['id']): ?>
+                <?php if ($login_user['is_privileged'] === 1 || $_SESSION['User']['id'] === $task['user_id']): ?>
                 <a href="task_update.php?id=<?php $task['id']?>">編集</a>
                 <?php endif ?>
                 </div>
                 <div class="task-cell cell-delete">
-                <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $manager['id']): ?>
+                <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task['user_id']): ?>
                 <a href="task_delete.php?id=<?php $task['id']?>" onclick="return confirm('本当に削除しますか？');">削除</a>
                 <?php endif ?>
                 </div>
