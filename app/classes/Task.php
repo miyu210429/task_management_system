@@ -89,6 +89,35 @@ class Task {
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    /**
+     * taskのidからそのレコードのすべてのカラムの情報を取得する
+     *
+     * @param  int $task_id
+     * @return bool | array
+     */
+    public function getByTaskId(int $task_id) : bool|array {
+        $query_task_id = $this->Task->prepare("SELECT * FROM tasks WHERE id=?");
+        $query_task_id->execute(array(
+            $task_id
+        ));
+        return $query_task_id->fetch();
+    }
+
+    
+    /**
+     * tasksテーブルからレコードを削除する
+     *
+     * @param  int $task_id
+     * @return bool
+     */
+    public function deleteTask(int $task_id) : bool {
+        $delete_query = $this->Task->prepare("DELETE FROM tasks WHERE id=?");
+        $delete_query->execute(array(
+            $task_id
+        ));
+        return true;
+    }
 
 
     

@@ -111,11 +111,11 @@ $tasks = $task->getAllTasks();
                 
                 
                 <div class="task-cell cell-edit">
-                <a href="task_update.php?id=<?php $task['id']?>">編集</a>
+                <a href="task_update.php?task_id=<?php echo($task['id'])?>">編集</a>
                 </div>
                 <div class="task-cell cell-delete">
                 <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task['user_id']): ?>
-                <a href="task_delete.php?id=<?php $task['id']?>" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <a href="task_delete.php?task_id=<?php echo h($task['id'])?>" onclick="return confirm('本当に削除しますか？');">削除</a>
                 <?php endif ?>
                 </div>
             </div>
