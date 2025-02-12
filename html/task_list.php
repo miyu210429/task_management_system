@@ -106,7 +106,7 @@ $tasks = $task->getAllTasks();
                 <?php if($task['deadline'] < date("Y-m-d")){?>
                 <font color="red"><?php echo h($task['deadline']) ?></font>
                 <?php } else { ?> 
-                <p> <?php echo $task['deadline']; }?> </p>
+                <p> <?php echo h($task['deadline']); }?> </p>
                 </div>
                 
                 
