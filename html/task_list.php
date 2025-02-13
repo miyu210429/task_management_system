@@ -13,11 +13,17 @@ $managers = $user->getAllUsers($fields);
 
 foreach ($managers as $manager) {
     $task_mana[$manager['id']] = $manager['nickname'];
-        
 }
 
-//すべてのタスクを取得
-$tasks = $task->getAllTasks();
+
+if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
+    $tasks = $task->search($_GET);
+} else { //検索でなければ全県取得
+    $tasks = $task->getAllTasks();
+}
+
+$progresses = $task->getPregressLabels();
+
 
 ?>
 <!DOCTYPE html>
@@ -39,38 +45,42 @@ $tasks = $task->getAllTasks();
             <h1>タスク一覧</h1>
             <form action="" method="get" class="search-form">
                 <div class="form-group">
-                <label for="assignee">担当者</label>
-                <select name="assignee" id="assignee">
+                <label for="user_id">担当者</label>
+                <select name="user_id" id="user_id">
                     <option value="">-- すべて --</option>
-                    <option value="1">美優</option>
-                    <option value="2">明典</option>
-                    <option value="3">麻紗美</option>
+                    <?php foreach ($managers as $user_info) : ?>
+                    <option value="<?php echo $user_info['id']?>"
+                    <? if(isset($_GET['user_id']) && $_GET['user_id'] == $user_info['id']): ?>selected <?php endif ?>>
+                        <?php echo $user_info['nickname'];?>
+                    </option>
+                    <?php endforeach ?>
                     <!-- その他の担当者 -->
                 </select>
                 </div>
 
                 <div class="form-group">
-                <label for="status">ステータス</label>
-                <select name="status" id="status">
-                    <option value="">-- 全て --</option>
-                    <option value="1">未着手</option>
-                    <option value="2">進行中</option>
-                    <option value="3">確認中</option>
-                    <option value="4">完了</option>
+                <label for="progress">進捗</label>
+                <select name="progress" id="progress">
+                <option value="">-- 全て --</option>
+                <?php foreach($progresses as $key =>  $progress): ?>
+                    <option value="<?php echo $key;?>"<? if(isset($_GET['progress']) && $_GET['progress'] == $key):?>selected <?php endif?>> 
+                        <?php echo $progress;?>
+                    </option> <?php endforeach ?>
                 </select>
                 </div>
 
                 <div class="form-group date-range">
                 <label>タスク期限</label>
                 <div class="date-inputs">
-                    <input type="date" name="start_date">
+                    <input type="date" name="start_date" value="<?php if(isset($_GET['start_date'])){ echo h($_GET['start_date']);}?>">
                     <span class="date-separator">〜</span>
-                    <input type="date" name="end_date">
+                    <input type="date" name="end_date" value="<?php if(isset($_GET['end_date'])){ echo h($_GET['end_date']);}?>">
                 </div>
                 </div>
 
                 <div class="form-group">
-                <button type="submit">検索</button>
+                 <input type="hidden" name="s" value="1">
+                 <button type="submit">検索</button>
                 </div>
             </form>
             </section>

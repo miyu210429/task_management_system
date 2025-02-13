@@ -113,6 +113,47 @@ class Task {
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    
+    /**
+     * タスク一覧の検索システム
+     *
+     * @param  array $params
+     * @param  bool $get_deleted_task
+     * @return array
+     */
+    public function search(array $params): array {
+        // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
+        $query = "SELECT * FROM tasks WHERE 1=1";
+ 
+        // 担当者をuser_idで検索
+        if (!empty($params['user_id'])) {
+           $query .= " AND user_id = ".trim($params['user_id'])."";
+        }
+ 
+        // 進捗で検索
+        if (!empty($params['progress']) || $params['progress'] == 0) {
+            $query .= " AND progress = ".trim($params['progress'])."";
+        }
+ 
+        // 締め切り期限の範囲
+        if (!empty($params['start_date'])) {
+             $query .= " AND deadline >= '".trim($params['start_date'])."'";
+        }
+ 
+        // 締め切り期限の範囲
+        if (!empty($params['end_date'])) {
+            $query .= " AND deadline <= '".trim($params['end_date'])."'";
+        }
+ 
+        //期限順になるように
+        $query .= " ORDER BY deadline ASC";
+
+        $stmt = $this->Task->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     
+    }
+
     
     /**
      * taskのidからそのレコードのすべてのカラムの情報を取得する
