@@ -122,10 +122,9 @@ class Task {
      * @param  bool $get_deleted_task
      * @return array
      */
-    public function search(array $params, bool $get_deleted_task = false): array {
+    public function search(array $params): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT * FROM tasks WHERE 1=1";
-        $bindings = [];
  
         // 担当者をuser_idで検索
         if (!empty($params['user_id'])) {
