@@ -15,18 +15,14 @@ foreach ($managers as $manager) {
     $task_mana[$manager['id']] = $manager['nickname'];
 }
 
+$progresses = $task->getPregressLabels();
 
 //まずタスクの数だけを取得する（SQLでcount(*)とかでとってくる）
-
 if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
     $tasks = $task->searchCount($_GET);
 } else { //検索でなければ全県取得
     $tasks = $task->getAllTaskCount();
 }
-
-
-
-$progresses = $task->getPregressLabels();
 
 //ページャー機能
 if (isset($_REQUEST['page'])) {
@@ -35,100 +31,26 @@ if (isset($_REQUEST['page'])) {
     $page = 1;
 }
 
-if(isset($tasks)){
-    $page = max($page, 1);
-    $maxPage = ceil($tasks['task_count'] / 5);
-    $page = min($page, $maxPage);
 
-    if (isset($_REQUEST['page']) && $_REQUEST['page'] < $page || isset($_REQUEST['page']) && $_REQUEST['page'] > $maxPage || !isset($_REQUEST['page'])) {
-        $page = 1;
-    }
-    
-    $start = ($page - 1) * 5;
-    //検索ありなしの最大ページ数がわかったら改めてタスクを取得する
-    
-    if(isset($_GET['s'])) {
-        $tasks = $task->search($_GET, $start);
-    } else {
-        $tasks = $task->getTaskPage($start);
-    }
-    
+$page = max($page, 1);
+$maxPage = ceil($tasks['task_count'] / 5);
+$page = min($page, $maxPage);
+
+if (isset($_REQUEST['page']) && $_REQUEST['page'] < $page || isset($_REQUEST['page']) && $_REQUEST['page'] > $maxPage || !isset($_REQUEST['page'])) {
+    $page = 1;
 }
 
+$start = ($page - 1) * 5;
 
-
-
-
-
-
-  //もう１度$maxPageを作って、一回で五件までしか表示できないようにしたい
-  //検索したときにpage=をつくりたい
- 
-
-
-    
-
-
- 
-
-//タスクのぺージャーすること（member.phpを参考にする）
-/*
-・・投稿を取得するせいぎょ
-・・$_REQUEST['page']があれば＄pageにそれをいれ、なければ１
-・・$_REQUEST['page']と検索のゲットクエリが重なりそうなんだけど、、
-//検索のurlを取得して同じように表示させたい
-//ｓ＝１のあとにpage=1とかをひょうじさせたい（<form action="" method="get" class="search-form">みたいに$_GETでやれるかな）
-//ページをまたいでも検索機能を引き継ぎたい
-
-
-//ページャーの機能
-foreachでやりたい
-現在のページ$page
-$maxPageをもととした配列を作る？　$maxPageが３なら３になるまでforで回して配列を作成する
-[0] => 1
-[1] => 2
-[2] => 3
-
-//のりちゃんのアドバイスめも
-とりあえず手続き型、そのあとオブジェクトではなく関数でページのかずをかえしてくれるものをつくる（function.phpにおく）
-ページは５件まで表示する
-
-$maxPageが１０だとする(ページが５以上ある例)
-$maxPageをnとして、カレントをpとする
-ｐが１２３までなら表示は１２３４５でいい　カレントの位置は左、左から二番め
-ｐが４なら２３４５６
-８まではそんなかんじで変化していく
-ｐが８９１０なら表示は変えずにカレントの位置のみ変わっていく
-
-//foreachならvalueが１以上$maxPage以下であることを確認しなければならない
-
-//２３４５６でカレントが４ならforのすたーとは２にすればよい
-
-
-//345678のときはうまくいく例
-$current_page = 9;
-$maxmax_page = 10;
-*/
-//$maxmax_pageが５より小さかったらの場合も作らないといけない
-function hoge(int $current_page,int $maxmax_page) :array {
-    
-    if($current_page === 1) {
-        $return =[$current_page,$current_page+1,$current_page+2,$current_page+3,$current_page+4]; //1
-    } elseif($current_page === 2) {
-        $return =[$current_page-1,$current_page,$current_page+1,$current_page+2,$current_page+3]; //2
-    } elseif($current_page == $maxmax_page-1) {
-        $return =[$current_page-3,$current_page-2,$current_page-1,$current_page,$current_page+1]; //9
-    } elseif($current_page == $maxmax_page) {
-        $return =[$current_page-4,$current_page-3,$current_page-2,$current_page-1,$current_page]; //10
-    } else {
-        $return =[$current_page-2,$current_page-1,$current_page,$current_page+1,$current_page+2]; //345678
-    }
-    return $return;
+//検索ありなしの最大ページ数がわかったら改めてタスクを取得する
+if(isset($_GET['s'])) {
+    $tasks = $task->search($_GET, $start);
+} else {
+    $tasks = $task->getTaskPage($start);
 }
-
-$current_page = $page;
-$maxmax_page = $maxPage;
-$page_array = hoge($current_page,$maxmax_page);
+  
+//ページャーを表示させる
+$page_array = countPage($page,$maxPage);
 
 
 ?>
@@ -238,23 +160,26 @@ $page_array = hoge($current_page,$maxmax_page);
             <?php  } ?>
             </section>
             
-            <?php /*
-            現在のページ数を取得したり最大ページ数を取得して
-            うまい具合にcurrentと表示するページ数を調整してくださいな
-            */
+            <?php 
+            
+            //現在のURLから$_GET['page']を削除する
             $url = removeCurrentPage($_SERVER['REQUEST_URI']);
+            if(isset($_GET['s'])) {
+                $page_url = '&page=';
+            } else {
+                $page_url = '?page=';
+            }
             ?>
             <nav class="pagination">
-            <ul><?php if(isset($_GET['s'])){$page_url = '&page=';} else {$page_url = '?page=';}?>
+            <ul>
             <li><a href="<?php echo h($url.$page_url); echo 1 ?>" class="prev">最初へ</a></li>
             <?php
-                foreach($page_array as $pager => $page_number) : 
-                if($current_page === $page_number){?>
-                    <li><span class="current"><?php echo h($page_number) ?></span></li>
+            foreach($page_array as $pager => $page_number) : 
+            if($page === $page_number) { ?>
+                <li><span class="current"><?php echo h($page_number) ?></span></li>
             <?php } else {?>
-        
-                    <li><a href="<?php echo h($url.$page_url.$page_number)?>"><?php echo h($page_number) ?></a></li>
-            <?php } endforeach ?>
+                <li><a href="<?php echo h($url.$page_url.$page_number)?>"><?php echo h($page_number) ?></a></li>
+            <?php } endforeach; ?>
                 <li><a href="<?php echo h($url.$page_url.$maxPage) ?>" class="next">最後へ</a></li>
             </ul>
             </nav>

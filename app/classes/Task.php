@@ -108,13 +108,19 @@ class Task {
      * 
      * @return array
      */
-    public function getAllTasks():array {
+    public function getAllTasks(): array {
         $query = "SELECT * FROM tasks ORDER BY deadline ASC";
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAllTaskCount():array|bool {
+    
+    /**
+     * すべてのタスクの数を取得する
+     *
+     * @return array|bool
+     */
+    public function getAllTaskCount(): array|bool {
         $query = "SELECT COUNT(*) as task_count FROM tasks";
         $stmt = $this->Task->query($query);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -122,7 +128,7 @@ class Task {
 
     
     /**
-     * ページの
+     * １ページに表示できる件数のタスクを取得
      *
      * @param  int $start_number
      * @return bool | array
@@ -135,11 +141,9 @@ class Task {
     }
 
 
-
- 
-    
     /**
      * タスク一覧の検索システム
+     * １ページに表示できる数分の検索されたタスクを取得する
      *
      * @param  array $params
      * @param  bool $get_deleted_task
@@ -176,7 +180,15 @@ class Task {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
      
     }
-
+    
+    
+    /**
+     * 検索にひっかかったタスクの数を取得する
+     *
+     * 
+     * @param  array $params
+     * @return bool|array
+     */
     public function searchCount(array $params): bool|array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT COUNT(*) as task_count FROM tasks WHERE 1=1";
