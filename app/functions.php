@@ -9,36 +9,44 @@ function h(?string $string): string {
     return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
 }
 
-
 /**
- * ページャーの数字の取得と条件（五ページ分まで表示）
- * $maxmax_pageが５以上の場合と、そうでない場合のパターンがある
+ * ページャーの数字の取得と条件（5ページ分まで表示）
+ * display_pagesページに満たない場合は最大ページ数分を
+ * display_pagesページに達している場合1~display_pagesページであれば1~display_pagesまでは
+ * そうでなければ$current_pageを中心にdisplay_pagesをベースに前後の数値足した分を（display_pages5であれば2ページずつ）
+ * current_pageがページャーの後半部分になる場合（currentが中央にこない場合）は最後のページから表示ページ数分を取得する
  * 
- *
  * @param  int $current_page //現在のページ
  * @param  int $maxmax_page //最大ページ
+ * @param  int $display_pages //ページャーで表示するページ数デフォルト5 表示上の問題で奇数しか認めない
  * @return array
  */
-function countPage(int $current_page, int $maxmax_page) :array {
-    
-    if($maxmax_page < 5) { //$maxmax_pageが五より小さい場合は、ページャーの表示を$maxmax_pageまでにする
-        for($i = 1; $i <= $maxmax_page; $i++){
-            $return[] = $i;
-        }
-        return $return;
+function getPaginationRange(int $current_page,int $max_page,int $display_pages = 5): array  {
+    $range = [];
+
+    // 表示ページ数が偶数の場合は+1して奇数にする（現在ページを中央に配置するため）
+    if ($display_pages % 2 === 0) {
+        $display_pages++;
     }
-    if($current_page === 1) { //現在のページから先の五件
-        $return =[$current_page,$current_page+1,$current_page+2,$current_page+3,$current_page+4]; 
-    } elseif($current_page === 2) { //現在のページから四件と一つ前のページ
-        $return =[$current_page-1,$current_page,$current_page+1,$current_page+2,$current_page+3]; 
-    } elseif($current_page == $maxmax_page-1) { //最終ページと現在のページから前に四件
-        $return =[$current_page-3,$current_page-2,$current_page-1,$current_page,$current_page+1]; 
-    } elseif($current_page == $maxmax_page) { //最終ページから前に五件
-        $return =[$current_page-4,$current_page-3,$current_page-2,$current_page-1,$current_page]; 
-    } else { //現在のページと前後二件
-        $return =[$current_page-2,$current_page-1,$current_page,$current_page+1,$current_page+2]; 
+
+    // 範囲の前後ページ数を計算
+    $half_range = floor($display_pages / 2);
+
+    if ($max_page <= $display_pages) {
+        // 最大ページ数が表示ページ数以下ならすべて表示
+        $range = range(1, $max_page);
+    } elseif ($current_page <= $half_range + 1) {
+        // 現在ページが前半部分（中央に寄せると最初のページを超える場合）
+        $range = range(1, $display_pages);
+    } elseif ($current_page >= $max_page - $half_range) {
+        // 現在ページが後半部分（中央に寄せると最後のページを超える場合）
+        $range = range($max_page - $display_pages + 1, $max_page);
+    } else {
+        // 現在ページを中心に表示
+        $range = range($current_page - $half_range, $current_page + $half_range);
     }
-    return $return;
+
+    return $range;
 }
 
 
