@@ -46,7 +46,7 @@ if(isset($_GET['s'])) {
 $page_array = countPage($page_info['current_page'],$page_info['maxPage']);
 
 //現在のURLから$_GET['page']を削除する
-$url = removeCurrentPage($_SERVER['REQUEST_URI']);
+$pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
 
 
 
@@ -159,15 +159,15 @@ $url = removeCurrentPage($_SERVER['REQUEST_URI']);
     
             <nav class="pagination">
             <ul>
-            <li><a href="<?php echo h($url.$page_url); echo 1 ?>" class="prev">最初へ</a></li>
+            <li><a href="<?php echo h($pager_base_url.$page_url); echo 1 ?>" class="prev">最初へ</a></li>
             <?php
             foreach($page_array as $page_number) : 
             if($page_info['current_page'] === $page_number) { ?>
                 <li><span class="current"><?php echo h($page_number) ?></span></li>
             <?php } else {?>
-                <li><a href="<?php echo h($url.$page_url.$page_number)?>"><?php echo h($page_number) ?></a></li>
+                <li><a href="<?php echo h($pager_base_url.$page_url.$page_number)?>"><?php echo h($page_number) ?></a></li>
             <?php } endforeach; ?>
-                <li><a href="<?php echo h($url.$page_url.$maxPage) ?>" class="next">最後へ</a></li>
+                <li><a href="<?php echo h($pager_base_url.$page_url.$maxPage) ?>" class="next">最後へ</a></li>
             </ul>
             </nav>
         </div>

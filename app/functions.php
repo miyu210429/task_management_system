@@ -50,7 +50,7 @@ function countPage(int $current_page, int $maxmax_page) :array {
  * @param  int $tasks
  * @return array
  */
-function getPageCount(string $request_page, int $tasks_count) :array{
+function getPageCount(?string $request_page, int $tasks_count) :array{
     if (isset($request_page)) {
         $page = (int) $request_page;
     } else {
