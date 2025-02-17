@@ -43,7 +43,7 @@ if(isset($_GET['s'])) {
 }
   
 //ページャーの数字を取得
-$page_array = getPaginationRange($page_info['current_page'],$page_info['maxPage'],6);
+$page_array = getPaginationRange($page_info['current_page'],$page_info['maxPage']);
 
 //現在のURLから$_GET['page']を削除する
 $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
