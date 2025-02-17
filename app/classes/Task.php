@@ -108,7 +108,7 @@ class Task {
      * 
      * @return array
      */
-    public function getAllTasks():array {
+    public function getAllTasks(): array {
         $query = "SELECT * FROM tasks ORDER BY deadline ASC";
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -116,13 +116,40 @@ class Task {
 
     
     /**
+     * すべてのタスクの数を取得する
+     *
+     * @return array|bool
+     */
+    public function getAllTaskCount(): array|bool {
+        $query = "SELECT COUNT(*) as task_count FROM tasks";
+        $stmt = $this->Task->query($query);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    
+    /**
+     * １ページに表示できる件数のタスクを取得
+     *
+     * @param  int $start_number
+     * @return bool | array
+     */
+    public function getTaskPage(int $start_number): bool|array{
+        $task_page = $this->Task->prepare("SELECT * FROM tasks ORDER BY deadline ASC LIMIT ?, 5");
+        $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
+        $task_page->execute();
+        return $task_page->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
      * タスク一覧の検索システム
+     * １ページに表示できる数分の検索されたタスクを取得する
      *
      * @param  array $params
      * @param  bool $get_deleted_task
      * @return array
      */
-    public function search(array $params): array {
+    public function search(array $params,int $start_number): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT * FROM tasks WHERE 1=1";
  
@@ -147,10 +174,50 @@ class Task {
         }
  
         //期限順になるように
-        $query .= " ORDER BY deadline ASC";
+        $query .= " ORDER BY deadline ASC LIMIT $start_number,5";
 
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     
+    }
+    
+    
+    /**
+     * 検索にひっかかったタスクの数を取得する
+     *
+     * 
+     * @param  array $params
+     * @return bool|array
+     */
+    public function searchCount(array $params): bool|array {
+        // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
+        $query = "SELECT COUNT(*) as task_count FROM tasks WHERE 1=1";
+  
+        // 担当者をuser_idで検索
+        if (!empty($params['user_id'])) {
+           $query .= " AND user_id = ".trim($params['user_id'])."";
+        }
+ 
+        // 進捗で検索
+        if (!empty($params['progress']) || $params['progress'] == 0) {
+            $query .= " AND progress = ".trim($params['progress'])."";
+        }
+ 
+        // 締め切り期限の範囲
+        if (!empty($params['start_date'])) {
+             $query .= " AND deadline >= '".trim($params['start_date'])."'";
+        }
+ 
+        // 締め切り期限の範囲
+        if (!empty($params['end_date'])) {
+            $query .= " AND deadline <= '".trim($params['end_date'])."'";
+        }
+ 
+        //期限順になるように
+        $query .= " ORDER BY deadline ASC";
+
+        $stmt = $this->Task->query($query);
+        return $stmt->fetch();
      
     }
 

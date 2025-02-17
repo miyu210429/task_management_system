@@ -15,14 +15,39 @@ foreach ($managers as $manager) {
     $task_mana[$manager['id']] = $manager['nickname'];
 }
 
+$progresses = $task->getPregressLabels();
 
+//まずタスクの数だけを取得する（SQLでcount(*)とかでとってくる）
 if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
-    $tasks = $task->search($_GET);
+    $tasks = $task->searchCount($_GET);
 } else { //検索でなければ全県取得
-    $tasks = $task->getAllTasks();
+    $tasks = $task->getAllTaskCount();
 }
 
-$progresses = $task->getPregressLabels();
+//タスクの最大ページ、現在のページ、データベースからSELECTする際に必要なタスクのスタートとなる数字を取得
+$request_page = null;
+if(isset($_REQUEST['page'])){
+    $request_page = $_REQUEST['page'];
+}
+$page_info = getPageCount($request_page, $tasks['task_count']);
+
+
+//検索ありなしの最大ページ数がわかったら改めてタスクを取得する
+//URLに表示させる文字を指定する
+if(isset($_GET['s'])) {
+    $tasks = $task->search($_GET, $page_info['start']);
+    $page_url = '&page='; 
+} else {
+    $tasks = $task->getTaskPage($page_info['start']);
+    $page_url = '?page='; 
+}
+  
+//ページャーの数字を取得
+$page_array = countPage($page_info['current_page'],$page_info['maxPage']);
+
+//現在のURLから$_GET['page']を削除する
+$pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
+
 
 
 ?>
@@ -97,7 +122,7 @@ $progresses = $task->getPregressLabels();
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
-            <?php foreach($tasks as $task){?>
+            <?php foreach($tasks as $task): ?>
             <div class="task-row">
                 <div class="task-cell cell-id"><?php echo h($task['id']) ?> </div>
                 <div class="task-cell cell-title"><?php echo h($task['name']) ?> </div>
@@ -129,22 +154,20 @@ $progresses = $task->getPregressLabels();
                 <?php endif ?>
                 </div>
             </div>
-            <?php  } ?>
+            <?php  endforeach; ?>
             </section>
-            
-            <?php /*
-            現在のページ数を取得したり最大ページ数を取得して
-            うまい具合にcurrentと表示するページ数を調整してくださいな
-            */?>
+    
             <nav class="pagination">
             <ul>
-                <li><a href="?page=1" class="prev">前へ</a></li>
-                <li><a href="?page=1">1</a></li>
-                <li><a href="?page=2">2</a></li>
-                <li><span class="current">3</span></li>
-                <li><a href="?page=4">4</a></li>
-                <li><a href="?page=5">5</a></li>
-                <li><a href="?page=4" class="next">次へ</a></li>
+            <li><a href="<?php echo h($pager_base_url.$page_url); echo 1 ?>" class="prev">最初へ</a></li>
+            <?php
+            foreach($page_array as $page_number) : 
+            if($page_info['current_page'] === $page_number) { ?>
+                <li><span class="current"><?php echo h($page_number) ?></span></li>
+            <?php } else {?>
+                <li><a href="<?php echo h($pager_base_url.$page_url.$page_number)?>"><?php echo h($page_number) ?></a></li>
+            <?php } endforeach; ?>
+                <li><a href="<?php echo h($pager_base_url.$page_url.$maxPage) ?>" class="next">最後へ</a></li>
             </ul>
             </nav>
         </div>
