@@ -125,6 +125,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
             <!-- ヘッダー行 -->
             <div class="task-list-header">
                 <div class="task-cell cell-id">ID</div>
+                <div class="task-cell cell-category">カテゴリ</div>
                 <div class="task-cell cell-title">タスク名</div>
                 <div class="task-cell cell-assignee">担当者</div>
                 <div class="task-cell cell-status">進捗状況</div>
@@ -135,6 +136,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
             <?php foreach($tasks as $task): ?>
             <div class="task-row">
                 <div class="task-cell cell-id"><?php echo h($task['id']) ?> </div>
+                <div class="task-cell cell-category">未設定</div>
                 <div class="task-cell cell-title"><?php echo h($task['name']) ?> </div>
                 <div class="task-cell cell-assignee">
                     <?php 
