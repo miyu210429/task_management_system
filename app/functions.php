@@ -93,4 +93,24 @@ function removeCurrentPage(string $url): string|bool{
 }
 
 
+/**
+ * 現在の時間に応じて挨拶を返す
+ *
+ * @return string
+ */
+function get_greeting() :string {
+    $hour = (int) date('G'); // 24時間表記（0〜23）
+
+    if ($hour >= 5 && $hour < 11) {
+        return "おはようございます";
+    } elseif ($hour >= 11 && $hour < 18) {
+        return "こんにちは";
+    } elseif ($hour >= 18 && $hour < 23) {
+        return "こんばんは";
+    } else {
+        return "早く寝よ？";
+    }
+}
+
+
 ?>
