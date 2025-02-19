@@ -104,6 +104,16 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 </div>
 
                 <div class="form-group">
+                <label for="category">カテゴリ</label>
+                <select name="category" id="category">
+                    <option value="">-- 全て --</option>
+                    <option value="cat1">カテゴリ 1</option>
+                    <option value="cat2">カテゴリ 2</option>
+                    <option value="cat3">カテゴリ 3</option>
+                </select>
+                </div>
+
+                <div class="form-group">
                  <input type="hidden" name="s" value="1">
                  <button type="submit">検索</button>
                 </div>
