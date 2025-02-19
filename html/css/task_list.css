@@ -89,58 +89,50 @@
   }
   
   /* ---------- タスク一覧 ---------- */
-  
-  /* ヘッダー行とデータ行の共通設定 */
-  .task-list-header,
-  .task-row {
-    display: grid;
-    /* grid-template-columns の値は各セルの幅の割合を指定 */
-    grid-template-columns: 60px 2fr 1.5fr 1fr 1.5fr 60px 60px;
-    align-items: center;
-    padding: 10px;
-    border: 1px solid #ddd;
-  }
-  
-  /* ヘッダー行 */
-  .task-list-header {
-    background-color: #f5f5f5;
-    font-weight: bold;
-  }
-  
-  /* データ行 */
-  .task-row {
-    border-top: none;
-  }
-  
-  .task-row:hover {
-    background-color: #f1f1f1;
-  }
-  
-  /* 各セル内のリンク */
-  .task-cell a {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .task-cell a:hover {
-    color: #0056b3;
-  }
-  
-  /* セル内パディング */
-  .task-cell {
-    padding: 5px 10px;
-  }
-  
+
+/* ヘッダー行とデータ行の共通設定（CSS Grid 使用） */
 .task-list-header,
 .task-row {
   display: grid;
-  /* 新しいグリッド設定 */
-  grid-template-columns: 60px 3fr 1fr 0.8fr 1fr 60px 60px;
+  /* 新しく「カテゴリ」列を追加したので、8列に設定 */
+  grid-template-columns: 60px 1fr 2fr 1.5fr 1fr 1.5fr 60px 60px;
   align-items: center;
   padding: 10px;
   border: 1px solid #ddd;
 }
+
+/* ヘッダー行のスタイル */
+.task-list-header {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+/* データ行の境界線調整 */
+.task-row:not(:first-child) {
+  border-top: none;
+}
+
+/* マウスオーバー時の背景色 */
+.task-row:hover {
+  background-color: #f1f1f1;
+}
+
+/* 各セルのパディング */
+.task-cell {
+  padding: 5px 10px;
+}
+
+/* セル内のリンクのスタイル */
+.task-cell a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.task-cell a:hover {
+  color: #0056b3;
+}
+
 
 /* ページャー全体のスタイル */
 .pagination {
