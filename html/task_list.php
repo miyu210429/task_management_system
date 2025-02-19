@@ -20,8 +20,8 @@ $progresses = $task->getPregressLabels();
 //まずタスクの数だけを取得する（SQLでcount(*)とかでとってくる）
 if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
     $tasks = $task->searchCount($_GET);
-} else { //検索でなければ全県取得
-    $tasks = $task->getAllTaskCount();
+} else { //検索でなければprogressが３以外のものを取得（デフォルトの表示）
+    $tasks = $task->getAllTaskCount($progress_mood = true);
 }
 
 //タスクの最大ページ、現在のページ、データベースからSELECTする際に必要なタスクのスタートとなる数字を取得
@@ -86,7 +86,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <div class="form-group">
                 <label for="progress">進捗</label>
                 <select name="progress" id="progress">
-                <option value="">-- 全て --</option>
+                <option value="">完了以外</option>
                 <?php foreach($progresses as $key =>  $progress): ?>
                     <option value="<?php echo $key;?>"<? if(isset($_GET['progress']) && $_GET['progress'] == $key):?>selected <?php endif?>> 
                         <?php echo $progress;?>

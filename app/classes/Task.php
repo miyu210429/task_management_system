@@ -15,6 +15,7 @@ class Task {
     public const PROGRESS_FIRST = 1; // 進行中
     public const PROGRESS_SECOND = 2; // 確認中
     public const PROGRESS_THIRD = 3; // 完了
+    public const PROGRESS_ALL = 4; // すべて
 
     //is_deletedのラベル
     public static array $deletedLabels = [
@@ -27,7 +28,8 @@ class Task {
         self::PROGRESS_NO => '未着手',
         self::PROGRESS_FIRST => '進行中',
         self::PROGRESS_SECOND => '確認中',
-        self::PROGRESS_THIRD => '完了'
+        self::PROGRESS_THIRD => '完了',
+        self::PROGRESS_ALL => 'すべて'
     ];
 
     /**
@@ -54,9 +56,8 @@ class Task {
         }
         
         return self::$pregressLabels;
-        
     }
-
+    
     
     /**
      * タスク情報をデータベースに挿入する
@@ -118,10 +119,15 @@ class Task {
     /**
      * すべてのタスクの数を取得する
      *
+     * @param  bool $progress_mood //trueなら３以外のものを取得する
      * @return array|bool
+     * 
      */
-    public function getAllTaskCount(): array|bool {
+    public function getAllTaskCount(bool $progress_mood = false): array|bool {
         $query = "SELECT COUNT(*) as task_count FROM tasks";
+        if($progress_mood){
+            $query .= " WHERE progress!=3";
+        }
         $stmt = $this->Task->query($query);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -134,7 +140,7 @@ class Task {
      * @return bool | array
      */
     public function getTaskPage(int $start_number): bool|array{
-        $task_page = $this->Task->prepare("SELECT * FROM tasks ORDER BY deadline ASC LIMIT ?, 5");
+        $task_page = $this->Task->prepare("SELECT * FROM tasks WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -160,7 +166,12 @@ class Task {
  
         // 進捗で検索
         if (!empty($params['progress']) || $params['progress'] == 0) {
-            $query .= " AND progress = ".trim($params['progress'])."";
+            if($params['progress'] != 4) {
+                $query .= " AND progress = ".trim($params['progress'])."";
+            } else {
+                $query .= " AND progress <= 3";
+            }
+            
         }
  
         // 締め切り期限の範囲
@@ -200,7 +211,11 @@ class Task {
  
         // 進捗で検索
         if (!empty($params['progress']) || $params['progress'] == 0) {
-            $query .= " AND progress = ".trim($params['progress'])."";
+            if($params['progress'] != 4) {
+                $query .= " AND progress = ".trim($params['progress'])."";
+            } else {
+                $query .= " AND progress <= 3";
+            }
         }
  
         // 締め切り期限の範囲
