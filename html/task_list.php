@@ -15,7 +15,7 @@ foreach ($managers as $manager) {
     $task_mana[$manager['id']] = $manager['nickname'];
 }
 
-$progresses = $task->getPregressLabels();
+$progresses = $task->getProgressLabels();
 
 //まずタスクの数だけを取得する（SQLでcount(*)とかでとってくる）
 if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
@@ -133,7 +133,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 </div>
                 <div class="task-cell cell-status">
                     <?php
-                    echo h(Task::getPregressLabels($task['progress']));
+                    echo h(Task::getProgressLabels($task['progress']));
                     ?>
                 </div>
                 

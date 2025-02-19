@@ -15,7 +15,6 @@ class Task {
     public const PROGRESS_FIRST = 1; // 進行中
     public const PROGRESS_SECOND = 2; // 確認中
     public const PROGRESS_THIRD = 3; // 完了
-    public const PROGRESS_ALL = 4; // すべて
 
     //is_deletedのラベル
     public static array $deletedLabels = [
@@ -28,8 +27,7 @@ class Task {
         self::PROGRESS_NO => '未着手',
         self::PROGRESS_FIRST => '進行中',
         self::PROGRESS_SECOND => '確認中',
-        self::PROGRESS_THIRD => '完了',
-        self::PROGRESS_ALL => 'すべて'
+        self::PROGRESS_THIRD => '完了'
     ];
 
     /**
@@ -50,7 +48,7 @@ class Task {
      * @param  int $progress 値が入ってなかったら$pregressLabelsの配列がreturnされる
      * @return int | array
      */
-    public static function getPregressLabels(?int $progress_number = null): string|array {
+    public static function getProgressLabels(?int $progress_number = null): string|array {
         if($progress_number !== null) {
             return self::$pregressLabels[$progress_number] ?? '不明';
         }
@@ -152,7 +150,7 @@ class Task {
      * １ページに表示できる数分の検索されたタスクを取得する
      *
      * @param  array $params
-     * @param  bool $get_deleted_task
+     * @param  int $start_number
      * @return array
      */
     public function search(array $params,int $start_number): array {
@@ -166,12 +164,10 @@ class Task {
  
         // 進捗で検索
         if (!empty($params['progress']) || $params['progress'] == 0) {
-            if($params['progress'] != 4) {
-                $query .= " AND progress = ".trim($params['progress'])."";
-            } else {
-                $query .= " AND progress <= 3";
-            }
-            
+            $query .= " AND progress = ".trim($params['progress'])."";
+        } 
+        if (empty($params['progress'])) {
+            $query .= " AND progress IN(0,1,2)";
         }
  
         // 締め切り期限の範囲
@@ -211,16 +207,15 @@ class Task {
  
         // 進捗で検索
         if (!empty($params['progress']) || $params['progress'] == 0) {
-            if($params['progress'] != 4) {
-                $query .= " AND progress = ".trim($params['progress'])."";
-            } else {
-                $query .= " AND progress <= 3";
-            }
+            $query .= " AND progress = ".trim($params['progress'])."";
+        }
+        if (empty($params['progress'])) {
+            $query .= " AND progress IN(0,1,2)";
         }
  
         // 締め切り期限の範囲
         if (!empty($params['start_date'])) {
-             $query .= " AND deadline >= '".trim($params['start_date'])."'";
+            $query .= " AND deadline >= '".trim($params['start_date'])."'";
         }
  
         // 締め切り期限の範囲
