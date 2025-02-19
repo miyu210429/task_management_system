@@ -48,15 +48,14 @@ class Task {
      * @param  int $progress 値が入ってなかったら$pregressLabelsの配列がreturnされる
      * @return int | array
      */
-    public static function getPregressLabels(?int $progress_number = null): string|array {
+    public static function getProgressLabels(?int $progress_number = null): string|array {
         if($progress_number !== null) {
             return self::$pregressLabels[$progress_number] ?? '不明';
         }
         
         return self::$pregressLabels;
-        
     }
-
+    
     
     /**
      * タスク情報をデータベースに挿入する
@@ -116,12 +115,13 @@ class Task {
 
     
     /**
-     * すべてのタスクの数を取得する
+     * 完了以外のタスクの数を取得する
      *
      * @return array|bool
+     * 
      */
-    public function getAllTaskCount(): array|bool {
-        $query = "SELECT COUNT(*) as task_count FROM tasks";
+    public function getUnfinishedTaskCount(): array|bool {
+        $query = "SELECT COUNT(*) as task_count FROM tasks WHERE progress!=3";
         $stmt = $this->Task->query($query);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -134,7 +134,7 @@ class Task {
      * @return bool | array
      */
     public function getTaskPage(int $start_number): bool|array{
-        $task_page = $this->Task->prepare("SELECT * FROM tasks ORDER BY deadline ASC LIMIT ?, 5");
+        $task_page = $this->Task->prepare("SELECT * FROM tasks WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -146,7 +146,7 @@ class Task {
      * １ページに表示できる数分の検索されたタスクを取得する
      *
      * @param  array $params
-     * @param  bool $get_deleted_task
+     * @param  int $start_number
      * @return array
      */
     public function search(array $params,int $start_number): array {
@@ -161,6 +161,9 @@ class Task {
         // 進捗で検索
         if (!empty($params['progress']) || $params['progress'] == 0) {
             $query .= " AND progress = ".trim($params['progress'])."";
+        } 
+        if (empty($params['progress'])) {
+            $query .= " AND progress IN(0,1,2)";
         }
  
         // 締め切り期限の範囲
@@ -202,10 +205,13 @@ class Task {
         if (!empty($params['progress']) || $params['progress'] == 0) {
             $query .= " AND progress = ".trim($params['progress'])."";
         }
+        if (empty($params['progress'])) {
+            $query .= " AND progress IN(0,1,2)";
+        }
  
         // 締め切り期限の範囲
         if (!empty($params['start_date'])) {
-             $query .= " AND deadline >= '".trim($params['start_date'])."'";
+            $query .= " AND deadline >= '".trim($params['start_date'])."'";
         }
  
         // 締め切り期限の範囲
