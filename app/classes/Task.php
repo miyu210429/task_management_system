@@ -115,17 +115,13 @@ class Task {
 
     
     /**
-     * すべてのタスクの数を取得する
+     * 完了以外のタスクの数を取得する
      *
-     * @param  bool $progress_mood //trueなら３以外のものを取得する
      * @return array|bool
      * 
      */
-    public function getAllTaskCount(bool $progress_mood = false): array|bool {
-        $query = "SELECT COUNT(*) as task_count FROM tasks";
-        if($progress_mood){
-            $query .= " WHERE progress!=3";
-        }
+    public function getUnfinishedTaskCount(): array|bool {
+        $query = "SELECT COUNT(*) as task_count FROM tasks WHERE progress!=3";
         $stmt = $this->Task->query($query);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

@@ -20,8 +20,8 @@ $progresses = $task->getProgressLabels();
 //まずタスクの数だけを取得する（SQLでcount(*)とかでとってくる）
 if(isset($_GET['s'])){ //getクエリにs(検索フォームのhidden要素)があったら検索している判定
     $tasks = $task->searchCount($_GET);
-} else { //検索でなければprogressが３以外のものを取得（デフォルトの表示）
-    $tasks = $task->getAllTaskCount($progress_mood = true);
+} else { //検索でなければ完了以外のものを取得（デフォルトの表示）
+    $tasks = $task->getUnfinishedTaskCount();
 }
 
 //タスクの最大ページ、現在のページ、データベースからSELECTする際に必要なタスクのスタートとなる数字を取得
