@@ -1,0 +1,67 @@
+/* メインコンテンツ：サイドメニュー固定の余白を考慮 */
+.main-content {
+    margin-left: 250px;              /* サイドメニューの幅分オフセット */
+    width: calc(100% - 250px);         /* 残りの幅を使用 */
+    padding: 20px;
+    background-color: #fff;
+    min-height: 100vh;
+  }
+  
+  /* コンテンツ中央寄せ用ラッパー */
+  .content-wrapper {
+    max-width: 600px;                /* 必要に応じて調整 */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ページタイトル */
+  h1 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* フォームグループ */
+  .category-form .form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* ラベル */
+  .category-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  /* テキスト入力フィールド */
+  .category-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* 送信ボタン */
+  .category-form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .category-form button:hover {
+    background-color: #0056b3;
+  }
+  
