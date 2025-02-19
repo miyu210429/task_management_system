@@ -13,7 +13,7 @@ $all_users = $user->getAllUsers($fields);
 
 //編集するタスクの情報を取ってくる
 $update_task = $task->getByTaskId($_REQUEST['task_id']);
-$progresses = $task->getPregressLabels();
+$progresses = $task->getProgressLabels();
 
 if(!empty($_POST)) {
     $error_conditions = $task->validateUpdateInput($_POST);
