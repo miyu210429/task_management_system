@@ -36,6 +36,40 @@ class Category {
 
     
     /**
+     * 更新されたカテゴリ情報をアップデートする
+     *
+     * @param  array $category_info
+     * @return bool|array
+     */
+    public function update(array $category_info, int $category_id): bool|array {
+        $query = $this->Category->prepare("UPDATE categories SET 
+            category_name=?,last_update_user_id=?,updated_at=NOW() WHERE id=?");
+        $query->execute(array(
+            $category_info['category_name'],
+            $category_info['last_update_user_id'],
+            $category_id
+
+        ));
+        return $query->fetch();
+    }
+
+    
+    /**
+     * idが$category_idのカテゴリを、カテゴリテーブルからSELECTしてくる
+     *
+     * @param  int $category_id
+     * @return bool|array
+     */
+    public function getByCategoryId(int $category_id) : bool|array {
+        $query_category_id = $this->Category->prepare("SELECT * FROM categories WHERE id=?");
+        $query_category_id->execute(array(
+            $category_id
+        ));
+        return $query_category_id->fetch();
+    }
+
+    
+    /**
      * カテゴリ名のバリデーション
      *
      * @param  string $category_name
@@ -68,6 +102,27 @@ class Category {
 
         return $errors;
     }
+
+
+    /**
+     * アップデートフォーム用のバリデーション
+     * 空白かどうかと、カテゴリ名のバリデーションに違反していないかチェック
+     *
+     * @param  mixed $targetInput
+     * @return array
+     */
+    public function validateUpdateInput(array $targetInput): array {
+        $errors = [];
+
+        if ((isset($targetInput['category_name']) && $targetInput['category_name'] == '') || !isset($targetInput['category_name'])) {
+            $errors['category_name'] = '入力してください';
+        } else if(($category_nameValidaton = self::validateCategoryName($targetInput['category_name'])) !== true){ 
+            $errors['category_name'] = $category_nameValidaton;          
+        }
+
+        return $errors;
+    }
+
 
 
 }
