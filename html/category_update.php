@@ -6,13 +6,13 @@ require_once '../app/auth.php';
 
 // ログインしているユーザーが特権ユーザーであるかチェック
 if ($login_user['is_privileged'] !== 1) {
-  header("Location: /task_list.php");
+  header("Location: /category_list.php");
   exit();
 }
 
 $category = new Category();
 
-$category_id = (int) $_REQUEST['category_id'];
+$category_id = (int) $_REQUEST['id'];
 // 編集するカテゴリの情報を取ってくる
 $update_category = $category->getByCategoryId($category_id);
 
@@ -24,11 +24,10 @@ if(!empty($_POST)) {
     $update_array['last_update_user_id'] = $login_user['id'];
 
     $category->update($update_array,$category_id);
-    header("Location: /task_list.php") ;exit();
+    header("Location: /category_list.php") ;exit();
 
   } else {
     $update_category['category_name'] = $_POST['category_name'];
-    $update_category['last_update_user_id'] = $login_user['id'];
   }
 
 

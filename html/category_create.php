@@ -6,7 +6,7 @@ require_once '../app/auth.php';
 
 // ログインしているユーザーが特権ユーザーであるかチェック
 if ($login_user['is_privileged'] !== 1) {
-  header("Location: /task_list.php");
+  header("Location: /category_list.php");
   exit();
 }
 
@@ -22,7 +22,7 @@ if(!empty($_POST)) {
 
     $category->insert($insert_array);
 
-    header("Location: /task_list.php");exit();
+    header("Location: /category_list.php");exit();
   }
 }
 
