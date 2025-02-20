@@ -4,6 +4,17 @@ require_once '../app/config.php';
 require_once '../app/functions.php';
 require_once '../app/auth.php';
 
+// ログインしているユーザーが特権ユーザーであるかチェック
+if ($login_user['is_privileged'] !== 1) {
+  header("Location: /category_list.php");
+  exit();
+}
+
+$category = new Category();
+
+//全てのカテゴリを取得
+$categories = $category->getAllCategories();
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -35,18 +46,22 @@ require_once '../app/auth.php';
                 <div class="category-cell cell-edit">編集</div>
                 <div class="category-cell cell-delete">削除</div>
             </div>
-            
+            <?php
+            foreach($categories as $display_category):
+            ?>
             <div class="category-row">
-                <div class="category-cell cell-name">サンプルカテゴリ</div>
-                <div class="category-cell cell-updater">new miyu</div>
-                <div class="category-cell cell-created">2025-02-01</div>
+                <div class="category-cell cell-name"><?php echo h($display_category['category_name'])?></div>
+                <div class="category-cell cell-updater"><?php echo h($display_category['nickname']) ?></div>
+                <div class="category-cell cell-created"><?php echo h($display_category['created_at'])?></div>
                 <div class="category-cell cell-edit">
-                <a href="category_update.php?id=1">編集</a>
+                <a href="category_update.php?id=<?php echo h($display_category['id'])?>">編集</a>
                 </div>
                 <div class="category-cell cell-delete">
-                <a href="category_delete.php?id=1" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <a href="category_delete.php?id=<?php echo h($display_category['id'])?>" onclick="return confirm('本当に削除しますか？');">削除</a>
                 </div>
             </div>
+            <?php endforeach; ?>
+
 
         </div>
     </div>
