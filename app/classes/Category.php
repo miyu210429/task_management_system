@@ -53,8 +53,7 @@ class Category {
         return $query->fetch();
     }
 
-    
-    /**
+       /**
      * すべてのカテゴリを取得する
      * 最終更新人はcategoriesテーブルのlast_update_user_idから、
      * usersテーブルに情報を取りに行くことで取得できる
@@ -62,7 +61,7 @@ class Category {
      * @return bool|array
      */
     public function getAllCategories(): bool|array {
-        $query = "SELECT u.id, u.nickname, c.* FROM categories c 
+        $query = "SELECT u.id, u.nickname, u.is_deleted, c.* FROM categories c 
             LEFT JOIN users u ON c.last_update_user_id=u.id 
             WHERE c.is_deleted=0 ORDER BY c.id DESC";
         $stmt = $this->Category->query($query);
@@ -87,16 +86,16 @@ class Category {
 
     
     /**
-     * カテゴリを削除する
-     *is_deletedカラムを１にすると削除
-     * 
-     * @param  int $category_id
-     * @return bool|array
+     * ユーザー情報を削除するためのもの
+     * is_deletedカラムを１にすると削除
+     *
+     * @param  int $delete_id
+     * @return bool | array
      */
-    public function deleteCategory(int $category_id): bool|array {
-        $delete_query = $this->Category->prepare("UPDATE categories SET is_deleted = 1 WHERE id=?");
+    public function deleteCategory(int $delete_id) : bool | array {
+        $delete_query = $this->Category->prepare('UPDATE categories SET is_deleted = 1 WHERE id=?');
         $delete_query->execute(array(
-            $category_id
+            $delete_id
         ));
         return $delete_query->fetch();
     }

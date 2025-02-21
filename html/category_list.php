@@ -14,7 +14,6 @@ $category = new Category();
 
 //全てのカテゴリを取得
 $categories = $category->getAllCategories();
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -48,6 +47,9 @@ $categories = $category->getAllCategories();
             </div>
             <?php
             foreach($categories as $display_category):
+            if($display_category['is_deleted'] === 1) {
+              $display_category['nickname'] = '削除済みのユーザーです';
+            }
             ?>
             <div class="category-row">
                 <div class="category-cell cell-name"><?php echo h($display_category['category_name'])?></div>
