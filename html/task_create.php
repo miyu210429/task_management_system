@@ -12,6 +12,7 @@ $category = new Category();
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $files = 'id,nickname';
 $all_users = $user->getAllUsers($files);
+//すべてのカテゴリの情報を取ってくる
 $all_categories = $category->getAllCategories();
 
 if (!empty($_POST)) {
@@ -19,11 +20,12 @@ if (!empty($_POST)) {
     $error_conditions = $task->validateInsertInput($_POST);
     if (empty($error_conditions)) {
 
+        $insert_array['category_id'] = $_POST['category_id'];
         $insert_array['name'] = $_POST['name'];
         $insert_array['detail'] = $_POST['detail'];
         $insert_array['user_id'] = $_POST['user_id'];
         $insert_array['deadline'] = $_POST['deadline'];
-        $insert_array['category_id'] = $_POST['category_id'];
+
 
         $task->insert($insert_array);
 
@@ -54,7 +56,7 @@ if (!empty($_POST)) {
             <div class="form-group">
                 <label for="category_id">カテゴリ</label>
                 <select id="category_id" name="category_id">
-                <option value="">-- 選択してください --</option>
+                <option value="">未設定</option>
                 <?php  foreach ($all_categories as $key => $category_info) :?>
                     <option value="<?php echo $key;?>"
                      <?if(isset($_POST['category_id']) && $_POST['category_id'] == $key):?>selected<?php endif;?>>

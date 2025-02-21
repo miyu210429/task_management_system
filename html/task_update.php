@@ -22,12 +22,14 @@ if(!empty($_POST)) {
     $error_conditions = $task->validateUpdateInput($_POST);
     
     if(empty($error_conditions)){
+
+        $update_array['category_id'] = $_POST['category_id'];
         $update_array['name'] = $_POST['name'];
         $update_array['detail'] = $_POST['detail'];
         $update_array['user_id'] = $_POST['user_id'];
         $update_array['progress'] = $_POST['progress'];
         $update_array['deadline'] = $_POST['deadline'];
-        $update_array['category_id'] = $_POST['category_id'];
+
 
 
         $primary_key = (int) $_REQUEST['task_id'];
@@ -35,11 +37,11 @@ if(!empty($_POST)) {
 
         header("Location: /task_list.php") ;exit();
     } else {
+        $update_task['category_id'] =  $_POST['category_id'];
         $update_task['name'] = $_POST['name'];
         $update_task['detail'] = $_POST['detail'];
         $update_task['progress'] = $_POST['progress'];
         $update_task['user_id'] = $_POST['user_id'];
-        $update_task['category_id'] =  $_POST['category_id'];
     }   
 }
 
@@ -64,7 +66,7 @@ if(!empty($_POST)) {
             <div class="form-group">
                 <label for="category_id">カテゴリ</label>
                 <select id="category_id" name="category_id">
-                <option value="">-- 選択してください --</option>
+                <option value="">未設定</option>
                 <?php  foreach ($all_categories as $key => $category_info) :?>
                     <option value="<?php echo $key;?>"
                      <?if(isset($update_task['category_id']) && $update_task['category_id'] == $key):?>selected<?php endif;?>>

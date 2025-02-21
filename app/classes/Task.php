@@ -64,6 +64,9 @@ class Task {
      * @return bool | array
      */
     public function insert(array $post_task_info): bool|array {
+        if($post_task_info['category_id'] == '') {
+            $post_task_info['category_id'] = NULL;
+        }
         $created_query = $this->Task->prepare(
             "INSERT INTO tasks SET category_id=?, name=?, detail=?, user_id=?, progress=0,
              deadline=?, created_at=NOW(), updated_at=NOW()
@@ -87,6 +90,9 @@ class Task {
      * @return bool | array
      */
     public function update(int $primary_key, array $update_task): bool|array {
+        if($update_task['category_id'] == '' ){
+            $update_task['category_id'] = NULL;
+        }
         $update_query = $this->Task->prepare(
             "UPDATE tasks SET category_id=?, name=?, detail=?, user_id=?, progress=?, deadline=?, updated_at=NOW() WHERE id=?"
         );
@@ -276,9 +282,6 @@ class Task {
          * 他の項目もすべて同じ感じ
          */ 
 
-         if ((isset($targetInput['category_id']) && $targetInput['category_id'] == '') || !isset($targetInput['category_id'])) {
-            $errors['category_id'] = '入力してください';
-        }
 
         if ((isset($targetInput['name']) && $targetInput['name'] == '') || !isset($targetInput['name'])) {
             $errors['name'] = '入力してください';
