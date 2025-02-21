@@ -7,11 +7,12 @@ require_once '../app/auth.php';
 
 $user = new User();
 $task = new Task();
+$category = new Category();
 
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $files = 'id,nickname';
 $all_users = $user->getAllUsers($files);
-
+$all_categories = $category->getAllCategories();
 
 if (!empty($_POST)) {
     //バリデーションをチェック
@@ -22,6 +23,7 @@ if (!empty($_POST)) {
         $insert_array['detail'] = $_POST['detail'];
         $insert_array['user_id'] = $_POST['user_id'];
         $insert_array['deadline'] = $_POST['deadline'];
+        $insert_array['category_id'] = $_POST['category_id'];
 
         $task->insert($insert_array);
 
@@ -48,6 +50,23 @@ if (!empty($_POST)) {
         <div class="content-wrapper">
             <h1>タスク作成</h1>
             <form action="" method="post" class="task-form">
+
+            <div class="form-group">
+                <label for="category_id">カテゴリ</label>
+                <select id="category_id" name="category_id">
+                <option value="">-- 選択してください --</option>
+                <?php  foreach ($all_categories as $key => $category_info) :?>
+                    <option value="<?php echo $key;?>"
+                     <?if(isset($_POST['category_id']) && $_POST['category_id'] == $key):?>selected<?php endif;?>>
+                        <?php echo $category_info['category_name'];?>
+                    </option>
+                <?php    endforeach ?>
+                </select>
+                <?php 
+                    if (isset($error_conditions['category_id']) && is_string($error_conditions['category_id'])) echo $error_conditions['category_id'];
+                ?>
+            </div>
+            
             <div class="form-group">
                 <label for="name">タスク名</label>
                 <input type="text" id="name" name="name" value="<?php if(isset($_POST['name']))
@@ -79,8 +98,6 @@ echo h($_POST['name']); ?>">
             <?php 
                 if (isset($error_conditions['user_id']) && is_string($error_conditions['user_id'])) echo $error_conditions['user_id'];
             ?>
-            
-
             </div>
             
             <div class="form-group">
@@ -91,7 +108,7 @@ echo h($_POST['deadline']); ?>">
                 if(isset($error_conditions['deadline']) && is_string($error_conditions['deadline'])) echo $error_conditions['deadline'];
                  ?>
             </div>
-            
+
             <div class="form-group">
                 <button type="submit">作成</button>
             </div>
