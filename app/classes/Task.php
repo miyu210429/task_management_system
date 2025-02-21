@@ -64,7 +64,7 @@ class Task {
      * @return bool | array
      */
     public function insert(array $post_task_info): bool|array {
-        if($post_task_info['category_id'] == '') {
+        if(isset($post_task_info['category_id']) && $post_task_info['category_id'] == '') {
             $post_task_info['category_id'] = NULL;
         }
         $created_query = $this->Task->prepare(
@@ -90,7 +90,7 @@ class Task {
      * @return bool | array
      */
     public function update(int $primary_key, array $update_task): bool|array {
-        if($update_task['category_id'] == '' ){
+        if(isset($update_task['category_id']) && $update_task['category_id'] == '' ){
             $update_task['category_id'] = NULL;
         }
         $update_query = $this->Task->prepare(
