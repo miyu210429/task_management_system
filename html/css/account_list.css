@@ -157,3 +157,19 @@
 .account-search-form button:hover {
   background-color: #0056b3;
 }
+
+.account-search-form .checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.account-search-form .checkbox-group label {
+  font-size: 16px;
+  color: #333;
+  font-weight: normal;
+}
+
+.account-search-form .checkbox-group input[type="checkbox"] {
+  margin-right: 8px;
+}
