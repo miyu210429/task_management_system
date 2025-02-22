@@ -112,8 +112,13 @@ class User {
     public function search(array $params, bool $get_deleted_user = false): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT * FROM users WHERE 1=1";
-        $bindings = [];
  
+        //タスクを持っていないユーザーを検索
+        //usersテーブルのidに存在していて、tasksテーブルのuser_idに存在していない値を取得する
+        if(isset($params['no_task_user']) && $params['no_task_user'] == 1) {
+            $query = "SELECT u.* FROM users u WHERE NOT EXISTS(SELECT t.user_id FROM tasks t WHERE u.id=t.user_id) AND 1=1";
+        }
+
         // ログイン名で検索（部分一致）
         if (!empty($params['login_name'])) {
            $query .= " AND login_name LIKE '%".trim($params['login_name']."%'");
