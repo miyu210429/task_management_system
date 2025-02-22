@@ -160,7 +160,15 @@ class Task {
     public function search(array $params,int $start_number): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT * FROM tasks WHERE 1=1";
- 
+        
+        //カテゴリを検索
+        if(isset($params['category_id']) && $params['category_id'] == 0) {
+            $query .= " AND category_id IS NULL";
+
+        } elseif (!empty($params['category_id'])) {
+            $query .= " AND category_id = ".trim($params['category_id'])."";
+        }
+
         // 担当者をuser_idで検索
         if (!empty($params['user_id'])) {
            $query .= " AND user_id = ".trim($params['user_id'])."";
@@ -204,6 +212,13 @@ class Task {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
         $query = "SELECT COUNT(*) as task_count FROM tasks WHERE 1=1";
   
+        //カテゴリを検索
+        if(isset($params['category_id']) && $params['category_id'] == 0) {
+            $query .= " AND category_id IS NULL";
+        } elseif (!empty($params['category_id'])) {
+            $query .= " AND category_id = ".trim($params['category_id'])."";
+        }
+
         // 担当者をuser_idで検索
         if (!empty($params['user_id'])) {
            $query .= " AND user_id = ".trim($params['user_id'])."";
