@@ -64,15 +64,19 @@ class Task {
      * @return bool | array
      */
     public function insert(array $post_task_info): bool|array {
+        if(isset($post_task_info['category_id']) && $post_task_info['category_id'] == '') {
+            $post_task_info['category_id'] = NULL;
+        }
         $created_query = $this->Task->prepare(
-            "INSERT INTO tasks SET name=?, detail=?, user_id=?, progress=0,
+            "INSERT INTO tasks SET category_id=?, name=?, detail=?, user_id=?, progress=0,
              deadline=?, created_at=NOW(), updated_at=NOW()
             ");
         $created_query->execute(array(
+            $post_task_info['category_id'],
             $post_task_info['name'],
             $post_task_info['detail'],
             $post_task_info['user_id'],
-            $post_task_info['deadline']
+            $post_task_info['deadline'],
         ));
         return $created_query->fetch();
     }
@@ -86,10 +90,14 @@ class Task {
      * @return bool | array
      */
     public function update(int $primary_key, array $update_task): bool|array {
+        if(isset($update_task['category_id']) && $update_task['category_id'] == '' ){
+            $update_task['category_id'] = NULL;
+        }
         $update_query = $this->Task->prepare(
-            "UPDATE tasks SET name=?, detail=?, user_id=?, progress=?, deadline=?, updated_at=NOW() WHERE id=?"
+            "UPDATE tasks SET category_id=?, name=?, detail=?, user_id=?, progress=?, deadline=?, updated_at=NOW() WHERE id=?"
         );
         $update_query->execute(array(
+            $update_task['category_id'],
             $update_task['name'],
             $update_task['detail'],
             $update_task['user_id'],
@@ -273,6 +281,7 @@ class Task {
          * nameのvalidation nameが入力されているが空白、もしくは存在しない場合はエラー情報が入る
          * 他の項目もすべて同じ感じ
          */ 
+
 
         if ((isset($targetInput['name']) && $targetInput['name'] == '') || !isset($targetInput['name'])) {
             $errors['name'] = '入力してください';

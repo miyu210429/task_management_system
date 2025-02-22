@@ -6,10 +6,13 @@ require_once '../app/auth.php';
 
 $user = new User();
 $task = new Task();
+$category = new Category();
 
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $fields = 'id,nickname';
 $all_users = $user->getAllUsers($fields);
+//すべてのカテゴリの情報を取ってくる
+$all_categories = $category->getAllCategories();
 
 //編集するタスクの情報を取ってくる
 $update_task = $task->getByTaskId($_REQUEST['task_id']);
@@ -19,17 +22,22 @@ if(!empty($_POST)) {
     $error_conditions = $task->validateUpdateInput($_POST);
     
     if(empty($error_conditions)){
+
+        $update_array['category_id'] = $_POST['category_id'];
         $update_array['name'] = $_POST['name'];
         $update_array['detail'] = $_POST['detail'];
         $update_array['user_id'] = $_POST['user_id'];
         $update_array['progress'] = $_POST['progress'];
         $update_array['deadline'] = $_POST['deadline'];
 
+
+
         $primary_key = (int) $_REQUEST['task_id'];
         $task->update($primary_key,$update_array);
 
         header("Location: /task_list.php") ;exit();
     } else {
+        $update_task['category_id'] =  $_POST['category_id'];
         $update_task['name'] = $_POST['name'];
         $update_task['detail'] = $_POST['detail'];
         $update_task['progress'] = $_POST['progress'];
@@ -54,6 +62,23 @@ if(!empty($_POST)) {
         <div class="content-wrapper">
             <h1>タスクID:<?php echo $update_task['id'] ?>の更新</h1>
             <form action="" method="post" class="task-form">
+
+            <div class="form-group">
+                <label for="category_id">カテゴリ</label>
+                <select id="category_id" name="category_id">
+                <option value="">未設定</option>
+                <?php  foreach ($all_categories as $key => $category_info) :?>
+                    <option value="<?php echo $key;?>"
+                     <?if(isset($update_task['category_id']) && $update_task['category_id'] == $key):?>selected<?php endif;?>>
+                        <?php echo $category_info['category_name'];?>
+                    </option>
+                <?php    endforeach ?>
+                </select>
+                <?php 
+                    if (isset($error_conditions['category_id']) && is_string($error_conditions['category_id'])) echo $error_conditions['category_id'];
+                ?>
+            </div>
+
             <div class="form-group">
                 <label for="name">タスク名</label>
                 <input type="text" id="name" name="name" value="<?php echo h($update_task['detail']); ?>">
