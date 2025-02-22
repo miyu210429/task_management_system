@@ -149,11 +149,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <div class="task-cell cell-id"><?php echo h($task['id']) ?></div>
                 <div class="task-cell cell-category">
                     <?php 
-                    if($task['category_id'] == NULL) {
-                        echo '未設定';
-                    } elseif(isset($category_name[$task['category_id']])) {
-                        echo h($category_name[$task['category_id']]); 
-                    }
+                    echo $task['category_id'] == NULL ? '未設定': $category_name[$task['category_id']]
                     ?>
                 </div>
                 <div class="task-cell cell-title"><?php echo h($task['name']) ?></div>
