@@ -12,7 +12,7 @@ if ($login_user['is_privileged'] !== 1) {
 
 $category = new Category();
 
-$category_id = (int) $_REQUEST['id'];
+$category_id = (int) $_REQUEST['category_id'];
 // 編集するカテゴリの情報を取ってくる
 $update_category = $category->getByCategoryId($category_id);
 

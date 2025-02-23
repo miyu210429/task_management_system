@@ -86,7 +86,7 @@ class Category {
 
     
     /**
-     * ユーザー情報を削除するためのもの
+     * カテゴリ情報を削除するためのもの
      * is_deletedカラムを１にすると削除
      *
      * @param  int $delete_id
@@ -99,6 +99,7 @@ class Category {
         ));
         return $delete_query->fetch();
     }
+    
 
     
     /**

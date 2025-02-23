@@ -56,10 +56,10 @@ $categories = $category->getAllCategories();
                 <div class="category-cell cell-updater"><?php echo h($display_category['nickname']) ?></div>
                 <div class="category-cell cell-created"><?php echo h($display_category['created_at'])?></div>
                 <div class="category-cell cell-edit">
-                <a href="category_update.php?id=<?php echo h($display_category['id'])?>">編集</a>
+                <a href="category_update.php?category_id=<?php echo h($display_category['id'])?>">編集</a>
                 </div>
                 <div class="category-cell cell-delete">
-                <a href="category_delete.php?id=<?php echo h($display_category['id'])?>" onclick="return confirm('本当に削除しますか？');">削除</a>
+                <a href="category_delete.php?category_id=<?php echo h($display_category['id'])?>" onclick="return confirm('本当に削除しますか？');">削除</a>
                 </div>
             </div>
             <?php endforeach; ?>
