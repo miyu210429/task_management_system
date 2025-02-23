@@ -93,7 +93,9 @@ class Category {
      * @return bool | array
      */
     public function deleteCategory(int $delete_id) : bool | array {
-        $delete_query = $this->Category->prepare('UPDATE categories SET is_deleted = 1 WHERE id=?');
+        $delete_query = $this->Category->prepare(
+            'UPDATE categories c JOIN tasks t SET c.is_deleted = 1, t.category_id=NULL WHERE c.id=?'
+        );
         $delete_query->execute(array(
             $delete_id
         ));
