@@ -9,6 +9,7 @@ if ($login_user['is_privileged'] !== 1) {
     exit();
 }
 
+$task = new Task();
 $category = new Category();
 
 //$_REQUEST['id']のカテゴリが存在しているかチェック
@@ -18,7 +19,13 @@ if (!$delete_target) {
 }
 
 //削除する
-$category->deleteCategory($_REQUEST['category_id']);
+try {
+    $category->deleteCategory($_REQUEST['category_id']);
+    $task->updateCategoryId($_REQUEST['category_id']);
+
+} catch (Exception $e){
+    echo 'うまく行っていません';
+}
 
 
 //すでに削除されていないかチェック

@@ -86,21 +86,20 @@ class Category {
 
     
     /**
-     * ユーザー情報を削除するためのもの
+     * カテゴリ情報を削除するためのもの
      * is_deletedカラムを１にすると削除
      *
      * @param  int $delete_id
      * @return bool | array
      */
     public function deleteCategory(int $delete_id) : bool | array {
-        $delete_query = $this->Category->prepare(
-            'UPDATE categories c JOIN tasks t SET c.is_deleted = 1, t.category_id=NULL WHERE c.id=?'
-        );
+        $delete_query = $this->Category->prepare('UPDATE categories SET is_deleted = 1 WHERE id=?');
         $delete_query->execute(array(
             $delete_id
         ));
         return $delete_query->fetch();
     }
+    
 
     
     /**
