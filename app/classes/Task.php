@@ -284,13 +284,13 @@ class Task {
      * タスクが所属しているカテゴリが削除されたら、タスクのcategory_idをNULLにする
      *
      * 
-     * @param  int $delete_id
+     * @param  int $tasks_category_id
      * @return bool
      */
-    public function  updateCategoryId(int $delete_id): bool|array {
+    public function  updateCategoryIdInitia(int $tasks_category_id): bool|array {
         $delete_query = $this->Task->prepare('UPDATE tasks SET category_id=NULL WHERE category_id=?');
         $delete_query->execute(array(
-            $delete_id
+            $tasks_category_id
         ));
         return $delete_query->fetch();
     }

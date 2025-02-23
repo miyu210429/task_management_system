@@ -21,7 +21,7 @@ if (!$delete_target) {
 //削除する
 try {
     $category->deleteCategory($_REQUEST['category_id']);
-    $task->updateCategoryId($_REQUEST['category_id']);
+    $task->updateCategoryIdInitialized($_REQUEST['category_id']);
 
 } catch (Exception $e){
     echo 'うまく行っていません';
