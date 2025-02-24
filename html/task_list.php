@@ -141,6 +141,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <div class="task-cell cell-assignee">担当者</div>
                 <div class="task-cell cell-status">進捗状況</div>
                 <div class="task-cell cell-deadline">タスク期限</div>
+                <div class="task-cell cell-parent">親id</div>
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
@@ -170,6 +171,8 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <?php } else { ?> 
                 <p> <?php echo h($task['deadline']); }?> </p>
                 </div>
+
+                <div class="task-cell cell-parent"><a href="" target="_blank">1511</a></div>
                 
                 
                 <div class="task-cell cell-edit">

@@ -81,7 +81,7 @@ if(!empty($_POST)) {
 
             <div class="form-group">
                 <label for="name">タスク名</label>
-                <input type="text" id="name" name="name" value="<?php echo h($update_task['detail']); ?>">
+                <input type="text" id="name" name="name" value="<?php echo h($update_task['name']); ?>">
             <?php
             if(isset($error_conditions['name']) && is_string($error_conditions['name'])){ echo $error_conditions['name']; }?>
             </div>
@@ -141,7 +141,52 @@ if(!empty($_POST)) {
             </div>
             </form>
         </div>
+        
+        <div class="child-task-create">
+            <a href="" class="btn-create"><?php echo h($update_task['name']); ?>の小タスク作成</a> 
+        </div>
+
+        <section class="task-list-section">
+            <!-- ヘッダー行 -->
+            <div class="task-list-header">
+                <div class="task-cell cell-id">ID</div>
+                <div class="task-cell cell-category">カテゴリ</div>
+                <div class="task-cell cell-title">タスク名</div>
+                <div class="task-cell cell-assignee">担当者</div>
+                <div class="task-cell cell-status">進捗状況</div>
+                <div class="task-cell cell-deadline">タスク期限</div>
+                <div class="task-cell cell-edit">編集</div>
+                <div class="task-cell cell-delete">削除</div>
+            </div>
+            <div class="task-row">
+                <div class="task-cell cell-id">111</div>
+                <div class="task-cell cell-category">
+                    未設定
+                </div>
+                <div class="task-cell cell-title">タスク名</div>
+                <div class="task-cell cell-assignee">
+                    担当者名
+                </div>
+                <div class="task-cell cell-status">
+                    進捗
+                </div>
+                
+                <div>
+                    2025-03-01
+                </div>
+        
+                
+                <div class="task-cell cell-edit">
+                    <a href="" target="_blank">編集</a>
+                </div>
+                <div class="task-cell cell-delete">
+                    <a href="" target="_blank">削除</a>
+                </div>
+            </div>
+        </section>
     </main>
+
+
 
 
   </div>
