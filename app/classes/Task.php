@@ -121,7 +121,23 @@ class Task {
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     
+    /**
+     * 親タスクのidから子タスクの情報を取得する
+     *
+     * @param  int $parent_task_id
+     * @return bool|array
+     */
+    public function getChildTasks(int $parent_task_id): bool|array {
+        $query = $this->Task->prepare("SELECT * FROM tasks WHERE parent_task_id=? ORDER BY deadline ASC");
+        $query->execute(array(
+            $parent_task_id
+        ));
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
     /**
      * 完了以外のタスクの数を取得する
      *
