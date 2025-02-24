@@ -34,7 +34,6 @@ if(!empty($_POST)) {
 
         $primary_key = (int) $_REQUEST['task_id'];
         $task->update($primary_key,$update_array);
-
         header("Location: /task_list.php") ;exit();
     } else {
         $update_task['category_id'] =  $_POST['category_id'];
@@ -144,7 +143,9 @@ if(!empty($_POST)) {
         </div>
         
         <div class="child-task-create">
-            <a href="" class="btn-create"><?php echo h($update_task['name']); ?>の小タスク作成</a> 
+            <a href="task_create.php?parent_task_id=<?php echo h($update_task['id']) ?>" 
+                class="btn-create"><?php echo h($update_task['name']); ?>の小タスク作成
+            </a> 
         </div>
 
         <section class="task-list-section">

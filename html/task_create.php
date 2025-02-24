@@ -9,6 +9,20 @@ $user = new User();
 $task = new Task();
 $category = new Category();
 
+$parent_task_id = NULL;
+
+if(isset($_GET['parent_task_id'])) {
+    $parent_task = $task->getByTaskId($_GET['parent_task_id']);
+
+    //$_GET['parent_task_id']がidのタスクがデータベースに存在しない場合、作成元が小タスクだった場合
+    //親タスクの編集ページにとぶ
+    if($task->getByTaskId($_GET['parent_task_id']) == false || isset($parent_task['parent_task_id'])) {
+        header('Location: task_update.php?task_id='.$parent_task['parent_task_id']);echo  exit();
+    }
+
+    $parent_task_id = (int)$_GET['parent_task_id'];
+}
+
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $files = 'id,nickname';
 $all_users = $user->getAllUsers($files);
@@ -26,8 +40,7 @@ if (!empty($_POST)) {
         $insert_array['user_id'] = $_POST['user_id'];
         $insert_array['deadline'] = $_POST['deadline'];
 
-
-        $task->insert($insert_array);
+        $task->insert($insert_array,$parent_task_id);
 
         header("Location: /task_list.php") ;exit();
 
@@ -51,7 +64,7 @@ if (!empty($_POST)) {
     <?php include '../templates/default.php'; ?>
     <main class="main-content">
         <div class="content-wrapper">
-            <h1>タスク作成</h1>
+            <h1><?php if($parent_task_id){ echo 'タスクID：'.$parent_task_id.'の子';}?>タスク作成</h1>
             <form action="" method="post" class="task-form">
 
             <div class="form-group">
