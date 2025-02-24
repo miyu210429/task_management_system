@@ -94,8 +94,8 @@
 .task-list-header,
 .task-row {
   display: grid;
-  /* 新しく「カテゴリ」列を追加したので、8列に設定 */
-  grid-template-columns: 60px 1fr 2fr 1.5fr 1fr 1.5fr 60px 60px;
+  /* 9列構成：各列の幅は以下のように設定*/
+  grid-template-columns: 60px 1fr 3fr 1fr 1fr 1fr 60px 60px 60px;
   align-items: center;
   padding: 10px;
   border: 1px solid #ddd;

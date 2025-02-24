@@ -44,6 +44,7 @@ if (!empty($_POST)) {
   <title>タスク作成</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/task.css">
+  <link rel="icon" href="./img/favicon.svg">
 </head>
 <body>
   <div class="container">

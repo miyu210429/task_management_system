@@ -47,6 +47,7 @@ if(!empty($_POST)) {
   <title>アカウント作成</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/account.css">
+  <link rel="icon" href="./img/favicon.svg">
 </head>
 <body>
   <div class="container">
