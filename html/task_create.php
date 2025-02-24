@@ -14,10 +14,13 @@ $parent_task_id = NULL;
 if(isset($_GET['parent_task_id'])) {
     $parent_task = $task->getByTaskId($_GET['parent_task_id']);
 
-    //$_GET['parent_task_id']がidのタスクがデータベースに存在しない場合、作成元が小タスクだった場合
+    //$_GET['parent_task_id']がidのタスクがデータベースに存在しない場合、作成元が子タスクだった場合
     //親タスクの編集ページにとぶ
-    if($task->getByTaskId($_GET['parent_task_id']) == false || isset($parent_task['parent_task_id'])) {
-        header('Location: task_update.php?task_id='.$parent_task['parent_task_id']);echo  exit();
+    if(isset($parent_task['parent_task_id'])) {
+        header('Location: task_update.php?task_id='.$parent_task['parent_task_id']); exit();
+    }
+    if(!$parent_task) {
+        header('Location: task_list.php');
     }
 
     $parent_task_id = (int)$_GET['parent_task_id'];
