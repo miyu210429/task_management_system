@@ -174,7 +174,7 @@ if(!empty($_POST)) {
             <div class="task-row">
                 <div class="task-cell cell-id"><?php echo h($child_task['id']) ?></div>
                 <div class="task-cell cell-category">
-                    <?php echo $child_task['category_name'] == NULL ? '未設定': $child_task['category_name'] ?>
+                    <?php echo $child_task['category_name'] == NULL ? '未設定': h($child_task['category_name']) ?>
                 </div>
 
                 <div class="task-cell cell-title"><?php echo h($child_task['name']) ?></div>
