@@ -16,8 +16,12 @@ if(!$update_task) {
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $fields = 'id,nickname';
 $all_users = $user->getAllUsers($fields);
+
 //すべてのカテゴリの情報を取ってくる
 $all_categories = $category->getAllCategories();
+
+//親タスクのidから子タスクの情報を取得する
+$child_tasks = $task->getChildTasks($update_task['id']);
 
 //編集するタスクの情報を取ってくる
 $progresses = $task->getProgressLabels();
@@ -153,6 +157,7 @@ if(!empty($_POST)) {
         </div>
         <?php endif; ?>
 
+        <?php if($child_tasks): ?>
         <section class="task-list-section">
             <!-- ヘッダー行 -->
             <div class="task-list-header">
@@ -165,32 +170,38 @@ if(!empty($_POST)) {
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
+            <?php foreach($child_tasks as $child_task): ?>
             <div class="task-row">
-                <div class="task-cell cell-id">111</div>
+                <div class="task-cell cell-id"><?php echo h($child_task['id']) ?></div>
                 <div class="task-cell cell-category">
-                    未設定
+                    <?php echo $child_task['category_name'] == NULL ? '未設定': h($child_task['category_name']) ?>
                 </div>
-                <div class="task-cell cell-title">タスク名</div>
-                <div class="task-cell cell-assignee">
-                    担当者名
-                </div>
+
+                <div class="task-cell cell-title"><?php echo h($child_task['name']) ?></div>
+                <div class="task-cell cell-assignee"><?php  echo h($child_task['nickname']); ?></div>
+                
                 <div class="task-cell cell-status">
-                    進捗
+                    <?php echo h(Task::getProgressLabels($child_task['progress'])); ?>
                 </div>
                 
                 <div>
-                    2025-03-01
+                    <?php if($child_task['deadline'] < date("Y-m-d")){?>
+                    <font color="red"><?php echo h($child_task['deadline']) ?></font>
+                    <?php } else { ?> 
+                    <p> <?php echo h($child_task['deadline']); }?> </p>
                 </div>
         
                 
                 <div class="task-cell cell-edit">
-                    <a href="" target="_blank">編集</a>
+                    <a href="task_update.php?task_id=<?php echo($child_task['id'])?>" target="_blank">編集</a>
                 </div>
                 <div class="task-cell cell-delete">
-                    <a href="" target="_blank">削除</a>
+                    <a href="task_delete.php?task_id=<?php echo h($child_task['id'])?>" onclick="return confirm('本当に削除しますか？');" target="_blank">削除</a>
                 </div>
             </div>
+            <?php endforeach ?>
         </section>
+        <?php endif; ?>
     </main>
 
 
