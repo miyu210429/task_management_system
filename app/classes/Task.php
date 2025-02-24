@@ -63,13 +63,13 @@ class Task {
      * @param  array $post_task_info
      * @return bool | array
      */
-    public function insert(array $post_task_info): bool|array {
+    public function insert(array $post_task_info, int $parent_task_id=NULL): bool|array {
         if(isset($post_task_info['category_id']) && $post_task_info['category_id'] == '') {
             $post_task_info['category_id'] = NULL;
         }
         $created_query = $this->Task->prepare(
             "INSERT INTO tasks SET category_id=?, name=?, detail=?, user_id=?, progress=0,
-             deadline=?, created_at=NOW(), updated_at=NOW()
+             deadline=?, parent_task_id=?,created_at=NOW(), updated_at=NOW()
             ");
         $created_query->execute(array(
             $post_task_info['category_id'],
@@ -77,11 +77,12 @@ class Task {
             $post_task_info['detail'],
             $post_task_info['user_id'],
             $post_task_info['deadline'],
+            $parent_task_id
         ));
         return $created_query->fetch();
     }
 
-    
+
     /**
      * タスクの情報を更新する
      *
@@ -120,7 +121,6 @@ class Task {
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
     
     /**
      * 完了以外のタスクの数を取得する

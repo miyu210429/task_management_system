@@ -8,6 +8,11 @@ $user = new User();
 $task = new Task();
 $category = new Category();
 
+$update_task = $task->getByTaskId($_REQUEST['task_id']);
+
+if(!$update_task) {
+    header("Location: /task_list.php") ;exit();
+}
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $fields = 'id,nickname';
 $all_users = $user->getAllUsers($fields);
@@ -15,7 +20,6 @@ $all_users = $user->getAllUsers($fields);
 $all_categories = $category->getAllCategories();
 
 //編集するタスクの情報を取ってくる
-$update_task = $task->getByTaskId($_REQUEST['task_id']);
 $progresses = $task->getProgressLabels();
 
 if(!empty($_POST)) {
@@ -34,7 +38,6 @@ if(!empty($_POST)) {
 
         $primary_key = (int) $_REQUEST['task_id'];
         $task->update($primary_key,$update_array);
-
         header("Location: /task_list.php") ;exit();
     } else {
         $update_task['category_id'] =  $_POST['category_id'];
@@ -143,9 +146,12 @@ if(!empty($_POST)) {
             </form>
         </div>
         
+        <?php if(!isset($update_task['parent_task_id'])) :?>
         <div class="child-task-create">
-            <a href="" class="btn-create"><?php echo h($update_task['name']); ?>の小タスク作成</a> 
+            <a href="task_create.php?parent_task_id=<?php echo h($update_task['id']) ?>" class="btn-create">
+                <?php echo h($update_task['name']); ?>の子タスク作成</a> 
         </div>
+        <?php endif; ?>
 
         <section class="task-list-section">
             <!-- ヘッダー行 -->
