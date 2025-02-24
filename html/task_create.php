@@ -15,11 +15,8 @@ if(isset($_GET['parent_task_id'])) {
     $parent_task = $task->getByTaskId($_GET['parent_task_id']);
 
     //$_GET['parent_task_id']がidのタスクがデータベースに存在しない場合、作成元が子タスクだった場合
-    //親タスクの編集ページにとぶ
-    if(isset($parent_task['parent_task_id'])) {
-        header('Location: task_update.php?task_id='.$parent_task['parent_task_id']); exit();
-    }
-    if(!$parent_task) {
+    //タスク一覧ページにとぶ
+    if(!$parent_task || isset($parent_task['parent_task_id'])) {
         header('Location: task_list.php');
     }
 
