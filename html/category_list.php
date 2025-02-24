@@ -23,6 +23,7 @@ $categories = $category->getAllCategories();
   <title>カテゴリ一覧</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/category_list.css">
+  <link rel="icon" href="./img/favicon.svg">
 </head>
 <body>
   <div class="container">

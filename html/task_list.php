@@ -65,6 +65,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
   <title>タスク一覧</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/task_list.css">
+  <link rel="icon" href="./img/favicon.svg">
 </head>
 <body>
   <div class="container">
@@ -173,7 +174,6 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 </div>
 
                 <div class="task-cell cell-parent"><a href="" target="_blank">1511</a></div>
-                
                 
                 <div class="task-cell cell-edit">
                 <a href="task_update.php?task_id=<?php echo($task['id'])?>">編集</a>
