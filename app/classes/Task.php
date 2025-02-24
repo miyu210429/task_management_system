@@ -125,12 +125,16 @@ class Task {
     
     /**
      * 親タスクのidから子タスクの情報を取得する
+     * タスクの担当者と、カテゴリの情報も一緒に取ってくる
      *
      * @param  int $parent_task_id
      * @return bool|array
      */
     public function getChildTasks(int $parent_task_id): bool|array {
-        $query = $this->Task->prepare("SELECT * FROM tasks WHERE parent_task_id=? ORDER BY deadline ASC");
+        $query = $this->Task->prepare(
+            "SELECT t.*, u.nickname, c.category_name FROM tasks t LEFT JOIN users u ON t.user_id=u.id
+             LEFT JOIN categories c ON t.category_id=c.id WHERE t.parent_task_id=?
+             ORDER BY deadline ASC");
         $query->execute(array(
             $parent_task_id
         ));

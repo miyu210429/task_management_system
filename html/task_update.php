@@ -16,14 +16,9 @@ if(!$update_task) {
 //すべてのユーザーのidとnicknameの情報を取ってくる
 $fields = 'id,nickname';
 $all_users = $user->getAllUsers($fields);
-foreach ($all_users as $manager) {
-    $task_mana[$manager['id']] = $manager['nickname'];
-}
+
 //すべてのカテゴリの情報を取ってくる
 $all_categories = $category->getAllCategories();
-foreach($all_categories as $category_info){
-    $category_name[$category_info['id']] = $category_info['category_name'];
-}
 
 //親タスクのidから子タスクの情報を取得する
 $child_tasks = $task->getChildTasks($update_task['id']);
@@ -179,13 +174,11 @@ if(!empty($_POST)) {
             <div class="task-row">
                 <div class="task-cell cell-id"><?php echo h($child_task['id']) ?></div>
                 <div class="task-cell cell-category">
-                    <?php echo $child_task['category_id'] == NULL ? '未設定': $category_name[$child_task['category_id']] ?>
+                    <?php echo $child_task['category_name'] == NULL ? '未設定': $child_task['category_name'] ?>
                 </div>
 
                 <div class="task-cell cell-title"><?php echo h($child_task['name']) ?></div>
-                <div class="task-cell cell-assignee">
-                    <?php  echo h($task_mana[$child_task['user_id']]); ?>
-                </div>
+                <div class="task-cell cell-assignee"><?php  echo h($child_task['nickname']); ?></div>
                 
                 <div class="task-cell cell-status">
                     <?php echo h(Task::getProgressLabels($child_task['progress'])); ?>
