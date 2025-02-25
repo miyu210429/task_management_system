@@ -288,17 +288,17 @@ class Task {
     
     /**
      * tasksテーブルからレコードを削除する
+     * 親タスクが削除されるとき、それに紐づく子タスクも一緒に削除できるようにする
      *
      * @param  int $task_id
      * @return bool
      */
     public function deleteTask(int $task_id) : bool {
-        $delete_query = $this->Task->prepare("DELETE FROM tasks WHERE id=?");
-        $delete_query->execute(array(
-            $task_id
-        ));
+        $delete_query = $this->Task->prepare("DELETE FROM tasks WHERE id=$task_id OR parent_task_id=$task_id");
+        $delete_query->execute();
         return true;
     }
+
 
     /**
      * 引数で指定されたカテゴリidを持つtasksのすべてのレコードのカテゴリidを
@@ -316,6 +316,22 @@ class Task {
         ));
         return $delete_query->fetch();
     }
+
+    
+    /**
+     * 親タスクに連なる子タスクの数を取得する
+     *
+     * @param  int $parent_task_id
+     * @return bool|array
+     */
+    public function getChildTaskCount(?int $parent_task_id): bool|array {
+        $query = $this->Task->prepare("SELECT COUNT(*) as task_count FROM tasks WHERE parent_task_id=?");
+        $query->execute(array(
+            $parent_task_id
+        ));
+        return $query->fetch();
+    }
+
     
     /**
      * タスクのバリデーションチェック
