@@ -47,7 +47,7 @@ if(isset($_GET['s'])) {
     $tasks = $task->getTaskPage($page_info['start']);
     $page_url = '?page='; 
 }
-  
+ 
 //ページャーの数字を取得
 $page_array = getPaginationRange($page_info['current_page'],$page_info['maxPage']);
 
@@ -146,43 +146,51 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <div class="task-cell cell-edit">編集</div>
                 <div class="task-cell cell-delete">削除</div>
             </div>
-            <?php foreach($tasks as $task): ?>
+            <?php foreach($tasks as $task_info):?>
             <div class="task-row">
-                <div class="task-cell cell-id"><?php echo h($task['id']) ?></div>
+                <div class="task-cell cell-id"><?php echo h($task_info['id']) ?></div>
                 <div class="task-cell cell-category">
                     <?php 
-                    echo $task['category_id'] == NULL ? '未設定': $category_name[$task['category_id']]
+                    echo $task_info['category_id'] == NULL ? '未設定': $category_name[$task_info['category_id']]
                     ?>
                 </div>
-                <div class="task-cell cell-title"><?php echo h($task['name']) ?></div>
+                <div class="task-cell cell-title"><?php echo h($task_info['name']) ?></div>
                 <div class="task-cell cell-assignee">
                     <?php 
-                     echo h($task_mana[$task['user_id']]);
+                     echo h($task_mana[$task_info['user_id']]);
                     ?> 
                 </div>
                 <div class="task-cell cell-status">
                     <?php
-                    echo h(Task::getProgressLabels($task['progress']));
+                    echo h(Task::getProgressLabels($task_info['progress']));
                     ?>
                 </div>
                 
                 <div>
-                <?php if($task['deadline'] < date("Y-m-d")){?>
-                <font color="red"><?php echo h($task['deadline']) ?></font>
+                <?php if($task_info['deadline'] < date("Y-m-d")){?>
+                <font color="red"><?php echo h($task_info['deadline']) ?></font>
                 <?php } else { ?> 
-                <p> <?php echo h($task['deadline']); }?> </p>
+                <p> <?php echo h($task_info['deadline']); }?> </p>
                 </div>
-
-                <div class="task-cell cell-parent"><a href="" target="_blank">1511</a></div>
+                
+                <div class="task-cell cell-parent">
+                    <?php if(isset($task_info['parent_task_id'])):?>
+                    <a href="task_update.php?task_id=<?php echo h($task_info['parent_task_id']) ?>" target="_blank"><? echo h($task_info['parent_task_id']); ?></a>
+                    <? endif; ?>
+                </div>
                 
                 <div class="task-cell cell-edit">
-                <a href="task_update.php?task_id=<?php echo($task['id'])?>">編集</a>
+                <a href="task_update.php?task_id=<?php echo($task_info['id'])?>">編集</a>
                 </div>
+
                 <div class="task-cell cell-delete">
-                <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task['user_id']): ?>
-                <a href="task_delete.php?task_id=<?php echo h($task['id'])?>" onclick="return confirm('本当に削除しますか？');">削除</a>
-                <?php endif ?>
+                    <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task_info['user_id']):?>
+                    <a href="task_delete.php?task_id=<?php echo h($task_info['id'])?>"
+                        onclick="return confirm('<?php if($task_info['child_task_count'] !== NULL){ echo $task_info['child_task_count']?>個の小タスクも削除されます。<? } ?>本当に削除しますか？');">削除</a>
+                    <?php endif; ?>
                 </div>
+                
+            
             </div>
             <?php  endforeach; ?>
             </section>

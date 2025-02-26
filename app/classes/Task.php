@@ -157,12 +157,22 @@ class Task {
     
     /**
      * １ページに表示できる件数のタスクを取得
+     * タスクにぶら下がっている子タスクの数も取得
      *
      * @param  int $start_number
      * @return bool | array
      */
     public function getTaskPage(int $start_number): bool|array{
-        $task_page = $this->Task->prepare("SELECT * FROM tasks WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
+        $task_page = $this->Task->prepare("SELECT 
+                t1.*, child_counts.child_count AS child_task_count
+            FROM tasks t1
+            LEFT JOIN (
+                SELECT parent_task_id, COUNT(*) AS child_count
+                FROM tasks
+                WHERE parent_task_id IS NOT NULL
+                GROUP BY parent_task_id
+            ) child_counts ON t1.id = child_counts.parent_task_id
+            WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -172,6 +182,7 @@ class Task {
     /**
      * タスク一覧の検索システム
      * １ページに表示できる数分の検索されたタスクを取得する
+     * タスクにぶら下がっている子タスクの数も取得
      *
      * @param  array $params
      * @param  int $start_number
@@ -179,8 +190,17 @@ class Task {
      */
     public function search(array $params,int $start_number): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
-        $query = "SELECT * FROM tasks WHERE 1=1";
-        
+        $query = "SELECT 
+            t1.*, child_counts.child_count AS child_task_count
+        FROM tasks t1
+        LEFT JOIN (
+            SELECT parent_task_id, COUNT(*) AS child_count
+            FROM tasks
+            WHERE parent_task_id IS NOT NULL
+            GROUP BY parent_task_id
+        ) child_counts ON t1.id = child_counts.parent_task_id
+        WHERE 1=1";
+                
         //カテゴリを検索
         if(isset($params['category_id']) && $params['category_id'] == 0) {
             $query .= " AND category_id IS NULL";
@@ -288,17 +308,17 @@ class Task {
     
     /**
      * tasksテーブルからレコードを削除する
+     * 親タスクが削除されるとき、それに紐づく子タスクも一緒に削除できるようにする
      *
      * @param  int $task_id
      * @return bool
      */
     public function deleteTask(int $task_id) : bool {
-        $delete_query = $this->Task->prepare("DELETE FROM tasks WHERE id=?");
-        $delete_query->execute(array(
-            $task_id
-        ));
+        $delete_query = $this->Task->prepare("DELETE FROM tasks WHERE id=$task_id OR parent_task_id=$task_id");
+        $delete_query->execute();
         return true;
     }
+
 
     /**
      * 引数で指定されたカテゴリidを持つtasksのすべてのレコードのカテゴリidを
@@ -316,6 +336,22 @@ class Task {
         ));
         return $delete_query->fetch();
     }
+
+    
+    /**
+     * 親タスクに連なる子タスクの数を取得する
+     *
+     * @param  int $parent_task_id
+     * @return bool|array
+     */
+    public function getChildTaskCount(?int $parent_task_id): bool|array {
+        $query = $this->Task->prepare("SELECT COUNT(*) as task_count FROM tasks WHERE parent_task_id=?");
+        $query->execute(array(
+            $parent_task_id
+        ));
+        return $query->fetch();
+    }
+
     
     /**
      * タスクのバリデーションチェック
