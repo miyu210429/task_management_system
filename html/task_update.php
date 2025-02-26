@@ -185,8 +185,11 @@ if(!empty($_POST)) {
                 </div>
                 
                 <div>
-                    <?php if($child_task['deadline'] < date("Y-m-d")){?>
-                    <font color="red"><?php echo h($child_task['deadline']) ?></font>
+                    <?php 
+                        $child_task['deadline'] = dateCalligraphy($child_task['deadline'],false);
+                        
+                        if($child_task['deadline'] < date("Y-m-d")){?>
+                        <font color="red"><?php echo h($child_task['deadline']) ?></font>
                     <?php } else { ?> 
                     <p> <?php echo h($child_task['deadline']); }?> </p>
                 </div>
