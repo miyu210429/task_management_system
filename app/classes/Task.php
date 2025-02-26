@@ -162,7 +162,16 @@ class Task {
      * @return bool | array
      */
     public function getTaskPage(int $start_number): bool|array{
-        $task_page = $this->Task->prepare("SELECT * FROM tasks WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
+        $task_page = $this->Task->prepare("SELECT 
+                t1.*, child_counts.child_count AS child_task_count
+            FROM tasks t1
+            LEFT JOIN (
+                SELECT parent_task_id, COUNT(*) AS child_count
+                FROM tasks
+                WHERE parent_task_id IS NOT NULL
+                GROUP BY parent_task_id
+            ) child_counts ON t1.id = child_counts.parent_task_id
+            WHERE t1.parent_task_id IS NULL AND progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -179,8 +188,17 @@ class Task {
      */
     public function search(array $params,int $start_number): array {
         // baseとなるSQL。WHERE 1=1 とすることで後続の AND 条件を組みやすくする。
-        $query = "SELECT * FROM tasks WHERE 1=1";
-        
+        $query = "SELECT 
+            t1.*, child_counts.child_count AS child_task_count
+        FROM tasks t1
+        LEFT JOIN (
+            SELECT parent_task_id, COUNT(*) AS child_count
+            FROM tasks
+            WHERE parent_task_id IS NOT NULL
+            GROUP BY parent_task_id
+        ) child_counts ON t1.id = child_counts.parent_task_id
+        WHERE t1.parent_task_id IS NULL AND 1=1";
+                
         //カテゴリを検索
         if(isset($params['category_id']) && $params['category_id'] == 0) {
             $query .= " AND category_id IS NULL";

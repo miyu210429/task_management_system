@@ -47,7 +47,7 @@ if(isset($_GET['s'])) {
     $tasks = $task->getTaskPage($page_info['start']);
     $page_url = '?page='; 
 }
-  
+ 
 //ページャーの数字を取得
 $page_array = getPaginationRange($page_info['current_page'],$page_info['maxPage']);
 
@@ -184,13 +184,10 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 </div>
 
                 <div class="task-cell cell-delete">
-                <?php //引数にforeachでキーとしている変数が必要だったためここで実行する
-                $child_task = $task->getChildTaskCount($task_info['id']); 
-                if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task_info['user_id']): 
-                ?>
-                <a href="task_delete.php?task_id=<?php echo h($task_info['id'])?>"
-                onclick="return confirm('<?php if(isset($child_task) && $child_task['task_count'] !== 0){ echo $child_task['task_count']?>個の小タスクも削除されます。<? } ?>本当に削除しますか？');">削除</a>
-                <?php endif; ?>
+                    <?php if ($login_user['is_privileged'] === 1 && $_SESSION['User']['id'] !== $task_info['user_id']):?>
+                    <a href="task_delete.php?task_id=<?php echo h($task_info['id'])?>"
+                        onclick="return confirm('<?php if($task_info['child_task_count'] !== NULL){ echo $task_info['child_task_count']?>個の小タスクも削除されます。<? } ?>本当に削除しますか？');">削除</a>
+                    <?php endif; ?>
                 </div>
                 
             
