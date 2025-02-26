@@ -6,7 +6,7 @@ require_once '../app/auth.php';
 
 // ログインしているユーザーが特権ユーザーであるかチェック
 if ($login_user['is_privileged'] !== 1) {
-  header("Location: /category_list.php");
+  header("Location: /logout.php");
   exit();
 }
 
