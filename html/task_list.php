@@ -167,7 +167,9 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 </div>
                 
                 <div>
-                <?php if($task_info['deadline'] < date("Y-m-d")){?>
+                <?php 
+                $task_info['deadline'] = dateCalligraphy($task_info['deadline'],false);
+                if($task_info['deadline'] < date("Y年m月d日")){?>
                 <font color="red"><?php echo h($task_info['deadline']) ?></font>
                 <?php } else { ?> 
                 <p> <?php echo h($task_info['deadline']); }?> </p>
