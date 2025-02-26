@@ -157,6 +157,7 @@ class Task {
     
     /**
      * １ページに表示できる件数のタスクを取得
+     * タスクにぶら下がっている子タスクの数も取得
      *
      * @param  int $start_number
      * @return bool | array
@@ -181,6 +182,7 @@ class Task {
     /**
      * タスク一覧の検索システム
      * １ページに表示できる数分の検索されたタスクを取得する
+     * タスクにぶら下がっている子タスクの数も取得
      *
      * @param  array $params
      * @param  int $start_number
