@@ -157,7 +157,7 @@ $pager_base_url = removeCurrentPage($_SERVER['REQUEST_URI']);
                 <div class="task-cell cell-title"><?php echo h($task_info['name'])?></div>
                 <div class="task-cell cell-assignee">
                     <?php
-                    echo !isset($task_mana[$task_info['user_id']]) ? '削除済み' :  h($task_mana[$task_info['user_id']]);
+                    echo isset($task_mana[$task_info['user_id']]) ? h($task_mana[$task_info['user_id']]): '削除済み';
                     ?> 
                 </div>
                 <div class="task-cell cell-status">
