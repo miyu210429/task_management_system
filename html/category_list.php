@@ -48,8 +48,8 @@ $categories = $category->getAllCategories();
             </div>
             <?php
             foreach($categories as $display_category):
-            if($display_category['is_deleted'] === 1) {
-              $display_category['nickname'] = '削除済みのユーザーです';
+            if($display_category['user_deleted'] == 1) {
+              $display_category['nickname'] = '削除済み';
             }
             ?>
             <div class="category-row">
