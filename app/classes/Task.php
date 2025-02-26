@@ -172,7 +172,7 @@ class Task {
                 WHERE parent_task_id IS NOT NULL
                 GROUP BY parent_task_id
             ) child_counts ON t1.id = child_counts.parent_task_id
-            WHERE t1.parent_task_id IS NULL AND progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
+            WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -199,7 +199,7 @@ class Task {
             WHERE parent_task_id IS NOT NULL
             GROUP BY parent_task_id
         ) child_counts ON t1.id = child_counts.parent_task_id
-        WHERE t1.parent_task_id IS NULL AND 1=1";
+        WHERE 1=1";
                 
         //カテゴリを検索
         if(isset($params['category_id']) && $params['category_id'] == 0) {
