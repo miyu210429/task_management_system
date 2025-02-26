@@ -114,4 +114,19 @@ function get_greeting() :string {
 }
 
 
+/**
+ * 日付のフォーマットを漢字にする
+ *
+ * @param  string $date
+ * @param  bool $time_mood //trueのときは時間も表示, falseは日にちまで
+ * @return string
+ */
+function dateCalligraphy(string $date, bool $time_mood = true) :string {
+    if($time_mood) {
+        return date('Y年m月d日 H時i分', strtotime($date));
+    }
+    return date('Y年m月d日', strtotime($date));
+}
+
+
 ?>

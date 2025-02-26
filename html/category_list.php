@@ -55,7 +55,9 @@ $categories = $category->getAllCategories();
             <div class="category-row">
                 <div class="category-cell cell-name"><?php echo h($display_category['category_name'])?></div>
                 <div class="category-cell cell-updater"><?php echo h($display_category['nickname']) ?></div>
-                <div class="category-cell cell-created"><?php echo h($display_category['created_at'])?></div>
+                <div class="category-cell cell-created">
+                  <?php $display_category['created_at'] = dateCalligraphy($display_category['created_at']); echo h($display_category['created_at']);?>
+                </div>
                 <div class="category-cell cell-edit">
                 <a href="category_update.php?category_id=<?php echo h($display_category['id'])?>">編集</a>
                 </div>
