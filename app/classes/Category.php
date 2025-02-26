@@ -61,8 +61,8 @@ class Category {
      * @return bool|array
      */
     public function getAllCategories(): bool|array {
-        $query = "SELECT u.id, u.nickname, u.is_deleted, c.* FROM categories c 
-            LEFT JOIN users u ON c.last_update_user_id=u.id 
+        $query = "SELECT u.id, u.nickname, u.is_deleted as user_deleted ,c.* FROM categories c 
+            LEFT JOIN users u ON c.last_update_user_id=u.id
             WHERE c.is_deleted=0 ORDER BY c.id DESC";
         $stmt = $this->Category->query($query);
         $stmt->execute();
