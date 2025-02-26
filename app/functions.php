@@ -65,13 +65,14 @@ function getPageCount(?string $request_page, int $tasks_count) :array{
         $page = 1;
     }
     $page = max($page, 1);
-    $maxPage = ceil($tasks_count / 5);
+    $maxPage = ceil($tasks_count / 10);
     $page = min($page, $maxPage);
+    $maxPage == 0 ? $maxPage=1 : $maxPage=$maxPage;
 
     if (isset($request_page) && $request_page < $page || isset($request_page) && $request_page > $maxPage || !isset($request_page)) {
         $page = 1;
     }
-    $start = ($page - 1) * 5;
+    $start = ($page - 1) * 10;
 
     $return['current_page'] = $page;
     $return['maxPage'] = $maxPage;

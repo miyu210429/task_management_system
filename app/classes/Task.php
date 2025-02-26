@@ -172,7 +172,7 @@ class Task {
                 WHERE parent_task_id IS NOT NULL
                 GROUP BY parent_task_id
             ) child_counts ON t1.id = child_counts.parent_task_id
-            WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 5");
+            WHERE progress!=3 ORDER BY deadline ASC LIMIT ?, 10");
         $task_page->bindParam(1, $start_number, PDO::PARAM_INT);
         $task_page->execute();
         return $task_page->fetchAll(PDO::FETCH_ASSOC);
@@ -233,7 +233,7 @@ class Task {
         }
  
         //期限順になるように
-        $query .= " ORDER BY deadline ASC LIMIT $start_number,5";
+        $query .= " ORDER BY deadline ASC LIMIT $start_number,10";
 
         $stmt = $this->Task->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
