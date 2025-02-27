@@ -19,10 +19,6 @@ if(!empty($_POST)){
       //削除済みのユーザーがログインできないようにチェックする
       $_SESSION['User']['id'] = $logininfo['id'];
       $_SESSION['time'] = time();
-
-      //ログイン情報を記録する
-      setcookie('email', $_POST['login_name'], time()+60);
-      setcookie('password', $_POST['password'], time()+60);
           
       header('Location: task_list.php'); exit(); //ログイン成功時はタスク一覧ページへ
       }
