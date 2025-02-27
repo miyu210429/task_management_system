@@ -4,6 +4,11 @@ session_start();
 require_once __DIR__ . '/autoload.php'; 
 require_once __DIR__ . '/classes/User.php';
 
+//ログアウトしていないユーザーが来た場合はタスク一覧ページにとばす
+if(isset($_SESSION['User']['id'])){
+    header('Location: task_list.php'); exit();
+}
+
 //ログインしているかチェック
 if (!isset($_SESSION['User']['id'])) {
     header("Location: /login.php");

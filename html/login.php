@@ -4,11 +4,7 @@ session_start();
 require_once '../app/autoload.php';
 require_once '../app/config.php';
 require_once '../app/functions.php';
-
-//ログアウトしていないユーザーが来た場合はタスク一覧ページにとばす
-if(isset($_SESSION['User']['id'])){
-  header('Location: task_list.php'); exit();
-}
+require_once '../app/auth.php';
 
 if(!empty($_POST)){
   
