@@ -6,7 +6,11 @@ session_start();
 $_SESSION = array();
 session_destroy();
 
-echo 'ログアウトが完了しました';
+if($_SERVER['REQUEST_URI'] == '/logout.php?time_out') {
+    echo '長時間操作がなかったのでログアウトしました';
+} else {
+    echo 'ログアウトが完了しました';
+}
 ?>
 
 <a href="login.php">ログインページに戻る</a>

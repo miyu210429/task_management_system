@@ -11,7 +11,7 @@ if (!isset($_SESSION['User']['id'])) {
 }
 //ログインしてから３時間たったら強制ログアウト
 if(time() > $_SESSION['time']+60*60*3) {
-    header('Location: logout.php'); exit();
+    header('Location: logout.php?time_out'); exit();
 }
 
 // ログイン中のユーザー情報を取得
