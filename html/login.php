@@ -26,7 +26,6 @@ if(!empty($_POST)){
    */
   $error_message = "ログインに失敗しました"; 
 }  
-echo $_SERVER['REQUEST_URI'];
 ?>
 
 

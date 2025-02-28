@@ -13,8 +13,7 @@ if($_SERVER['REQUEST_URI'] != '/login.php' && !isset($_SESSION['User']['id'])) {
 }
 
 //ログアウトしていないユーザーが来た場合はタスク一覧ページにとばす
-
-if(isset($_SESSION['User']['id']) && $_SERVER['REQUEST_URI'] != '/task_list.php'){
+if($_SERVER['REQUEST_URI'] == '/login.php' && isset($_SESSION['User']['id'])){
     header('Location: task_list.php'); exit();
 }
 
