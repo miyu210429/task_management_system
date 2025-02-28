@@ -1,9 +1,8 @@
 <?php
-session_start();
-
 require_once '../app/autoload.php';
 require_once '../app/config.php';
 require_once '../app/functions.php';
+require_once '../app/auth.php'; 
 
 if(!empty($_POST)){
   
@@ -23,13 +22,12 @@ if(!empty($_POST)){
       header('Location: task_list.php'); exit(); //ログイン成功時はタスク一覧ページへ
       }
     }
-
   /*
    * エラーの内容は詳細に出力可能だが、セキュリティの観点でなんでエラーなのかはシンプルにする
    * 登録系のフォームでは細かくエラー内容を出力する必要あり
    */
-  $error_message = "ログインに失敗しました";  
-  }  
+  $error_message = "ログインに失敗しました"; 
+}  
 ?>
 
 
