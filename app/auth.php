@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_URI'] != '/login.php' && !isset($_SESSION['User']['id'])) {
     exit();
 }
 //ログインしてから３時間たったら強制ログアウト
-if(time() > $_SESSION['time']+60*60*3) {
+if(isset($_SESSION['time']) && time() > $_SESSION['time']+60) {
     header('Location: logout.php?time_out=1'); exit();
 }
 
@@ -33,5 +33,6 @@ if(isset($_SESSION['User']['id'])){
         header("Location: /login.php");
         exit();
     }
+    $_SESSION['time'] = time();
         
 }

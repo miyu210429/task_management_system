@@ -6,11 +6,11 @@ session_start();
 $_SESSION = array();
 session_destroy();
 
-if($_GET['time_out'] == 1) {
-    echo '長時間操作がなかったのでログアウトしました';
-} else {
-    echo 'ログアウトが完了しました';
+if(isset($_GET['time_out']) && $_GET['time_out'] == 1) {
+    echo '長時間操作がなかったので';
 }
+echo 'ログアウトしました';
+
 ?>
 
 <a href="login.php">ログインページに戻る</a>
