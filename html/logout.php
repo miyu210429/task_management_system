@@ -6,7 +6,7 @@ session_start();
 $_SESSION = array();
 session_destroy();
 
-if($_SERVER['REQUEST_URI'] == '/logout.php?time_out') {
+if($_GET['time_out'] == 1) {
     echo '長時間操作がなかったのでログアウトしました';
 } else {
     echo 'ログアウトが完了しました';
