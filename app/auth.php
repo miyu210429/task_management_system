@@ -7,7 +7,7 @@ require_once __DIR__ . '/classes/User.php';
 //ログインしているかチェック
 //リクアイアすると、$_SESSIONは常に存在していないから、login.phpにずっと飛ばされる
 //login.phpのときは$_SESSION['User']['id']が存在していないかチェックしない
-if($_SERVER['REQUEST_URI'] != '/login.php') {
+if($_SERVER['REQUEST_URI'] != '/login.php' && !isset($_SESSION['User']['id'])) {
     if (!isset($_SESSION['User']['id'])) {
         header("Location: /login.php");
         exit();
@@ -18,8 +18,6 @@ if($_SERVER['REQUEST_URI'] != '/login.php') {
 if(isset($_SESSION['User']['id']) && $_SERVER['REQUEST_URI'] != '/task_list.php'){
     header('Location: task_list.php'); exit();
 }
-
-
 
 
 if(isset($_SESSION['User']['id'])){
