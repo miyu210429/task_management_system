@@ -10,12 +10,15 @@ if($_SERVER['REQUEST_URI'] != '/login.php' && !isset($_SESSION['User']['id'])) {
     header("Location: /login.php");
     exit();
 }
+//ログインしてから３時間たったら強制ログアウト
+if(isset($_SESSION['time']) && time() > $_SESSION['time']+60*60*3) {
+    header('Location: logout.php?time_out=1'); exit();
+}
 
 //ログアウトしていないユーザーがログインページに来た場合はタスク一覧ページにとばす
 if($_SERVER['REQUEST_URI'] == '/login.php' && isset($_SESSION['User']['id'])){
     header('Location: task_list.php'); exit();
 }
-
 
 if(isset($_SESSION['User']['id'])){
 
@@ -30,5 +33,6 @@ if(isset($_SESSION['User']['id'])){
         header("Location: /login.php");
         exit();
     }
+    $_SESSION['time'] = time();
         
 }

@@ -2,10 +2,15 @@
 //セッションを利用可能にする
 session_start();
 
-//セッションの情報を空にする
-unset($_SESSION['User']['id']) ;
+// セッション情報を削除
+$_SESSION = array();
+session_destroy();
 
-echo 'ログアウトが完了しました';
+if(isset($_GET['time_out']) && $_GET['time_out'] == 1) {
+    echo '長時間操作がなかったので';
+}
+echo 'ログアウトしました';
+
 ?>
 
 <a href="login.php">ログインページに戻る</a>

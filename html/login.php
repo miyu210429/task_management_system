@@ -17,6 +17,8 @@ if(!empty($_POST)){
       //$_SESSION['id']だと他にセッションでid持たせたいときにカニバリそうなので$_SESSION['User']['id']とする
       //削除済みのユーザーがログインできないようにチェックする
       $_SESSION['User']['id'] = $logininfo['id'];
+      $_SESSION['time'] = time();
+          
       header('Location: task_list.php'); exit(); //ログイン成功時はタスク一覧ページへ
       }
     }
