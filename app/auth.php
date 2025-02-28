@@ -19,7 +19,7 @@ $user = new User();
 $login_user = $user->getById($_SESSION['User']['id']);
 $user = null; //本来はこういう書き方しないけど後々$userでインスタンス作ってるのでこのインスタンスはここで破棄
 
-//ユーザーが見つからない場合はログアウト処理
+//ユーザーが見つからない場合はログインページにとばす
 if (!$login_user) {
     session_destroy();
     header("Location: /login.php");
